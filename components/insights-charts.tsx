@@ -31,7 +31,7 @@ export function InsightsCharts({ monthlyData, categoryData }: InsightsChartsProp
           <CardTitle>Monthly Income vs Expenses</CardTitle>
           <CardDescription>6-month comparison of cash flow</CardDescription>
         </CardHeader>
-        <CardContent className="h-[320px] pt-2">
+        <CardContent className="h-[260px] sm:h-[320px] pt-2">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={monthlyData} barGap={4}>
               <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-zinc-100 dark:text-zinc-800" />
@@ -54,7 +54,7 @@ export function InsightsCharts({ monthlyData, categoryData }: InsightsChartsProp
           <CardTitle>Spending by Category</CardTitle>
           <CardDescription>All-time expense breakdown</CardDescription>
         </CardHeader>
-        <CardContent className="h-[320px] pt-2">
+        <CardContent className="h-[260px] sm:h-[320px] pt-2">
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={categoryData} layout="vertical" barSize={16}>
               <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="currentColor" className="text-zinc-100 dark:text-zinc-800" />
