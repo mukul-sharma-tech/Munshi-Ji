@@ -2,9 +2,8 @@ import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import { AppSidebar } from "@/components/app-sidebar";
-import { RoleProvider } from "@/lib/role-context";
+import { Providers } from "@/components/providers";
 import { RoleSwitcher } from "@/components/role-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 
@@ -29,8 +28,7 @@ export default function RootLayout({
       className={`${inter.variable} h-full antialiased font-[var(--font-inter)]`}
     >
       <body className="min-h-full flex flex-col">
-        <TooltipProvider>
-        <RoleProvider>
+        <Providers>
         <SidebarProvider>
           <AppSidebar />
           <SidebarInset>
@@ -44,8 +42,7 @@ export default function RootLayout({
             <main className="flex-1">{children}</main>
           </SidebarInset>
         </SidebarProvider>
-        </RoleProvider>
-        </TooltipProvider>
+        </Providers>
       </body>
     </html>
   );

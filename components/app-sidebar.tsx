@@ -39,11 +39,11 @@ const navItems = [
   { title: "Dashboard",    icon: LayoutDashboard, href: "/"             },
   { title: "Transactions", icon: ArrowLeftRight,  href: "/transactions" },
   { title: "Insights",     icon: Lightbulb,       href: "/insights"     },
-  { title: "Settings",     icon: Settings,        href: "/settings"     },
+  // { title: "Settings",     icon: Settings,        href: "/settings"     },
 ];
 
 const footerItems = [
-  { title: "Help Center", icon: HelpCircle, href: "#" },
+  { title: "Help Center", icon: HelpCircle, href: "/help" },
 ];
 
 export function AppSidebar() {
@@ -110,13 +110,17 @@ export function AppSidebar() {
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
               <DropdownMenuContent side="right" align="end" className="w-48">
-                <DropdownMenuItem>
-                  <User className="mr-2 h-4 w-4" />
-                  Profile Settings
+                <DropdownMenuItem asChild>
+                  <Link href="/profile">
+                    <User className="mr-2 h-4 w-4" />
+                    Profile Settings
+                  </Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <CreditCard className="mr-2 h-4 w-4" />
-                  Billing
+                <DropdownMenuItem asChild>
+                  <Link href="/billing">
+                    <CreditCard className="mr-2 h-4 w-4" />
+                    Billing
+                  </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
                 <DropdownMenuItem className="text-destructive focus:text-destructive">

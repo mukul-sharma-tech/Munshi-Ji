@@ -23,6 +23,7 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -50,6 +51,7 @@ import {
   ArrowUpDownIcon,
   FilterIcon,
   XIcon,
+  Columns2Icon,
   ArrowUpIcon as SortAscIcon,
   ArrowDownIcon as SortDescIcon,
 } from "lucide-react";
@@ -85,6 +87,14 @@ export default function TransactionsPage() {
   const [amountMinFilter, setAmountMinFilter] = useState<string>("");
   const [amountMaxFilter, setAmountMaxFilter] = useState<string>("");
   const [showFilters, setShowFilters] = useState(false);
+  const [showColumns, setShowColumns] = useState(false);
+
+  type ColKey = "date" | "description" | "category" | "type" | "amount";
+  const [visibleCols, setVisibleCols] = useState<Record<ColKey, boolean>>({
+    date: true, description: true, category: true, type: true, amount: true,
+  });
+  const toggleCol = (col: ColKey) =>
+    setVisibleCols((prev) => ({ ...prev, [col]: !prev[col] }));
 
   // Handle sorting
   const handleSort = (field: SortField) => {
@@ -173,6 +183,7 @@ export default function TransactionsPage() {
   // Check if any filters are active
   const hasActiveFilters = searchTerm !== "" || typeFilter !== "all" || categoryFilter !== "all" ||
     dateFromFilter !== "" || dateToFilter !== "" || amountMinFilter !== "" || amountMaxFilter !== "";
+  const activeFilterCount = [typeFilter !== "all", categoryFilter !== "all", dateFromFilter !== "", dateToFilter !== "", amountMinFilter !== "", amountMaxFilter !== ""].filter(Boolean).length;
   const totalPages = Math.ceil(filteredAndSortedTransactions.length / ITEMS_PER_PAGE);
   const paginatedTransactions = useMemo(() => {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -372,123 +383,112 @@ export default function TransactionsPage() {
         </div>
       </div>
 
-      {/* Search */}
-      <div className="relative">
-        <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-muted-foreground" />
-        <Input
-          placeholder="Search transactions..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="pl-10"
-        />
-      </div>
-
-      {/* Filters */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setShowFilters(!showFilters)}
-            className="flex items-center gap-2"
-          >
-            <FilterIcon className="h-4 w-4" />
-            Filters
-            {hasActiveFilters && (
-              <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-xs">
-                {[searchTerm, typeFilter !== "all" ? typeFilter : "", categoryFilter !== "all" ? categoryFilter : "",
-                  dateFromFilter, dateToFilter, amountMinFilter, amountMaxFilter].filter(Boolean).length}
-              </Badge>
-            )}
-          </Button>
-          {hasActiveFilters && (
-            <Button variant="ghost" size="sm" onClick={clearFilters} className="text-muted-foreground">
-              <XIcon className="h-4 w-4 mr-1" />
-              Clear all
-            </Button>
-          )}
+      {/* Search + Filter + Columns */}
+      <div className="flex gap-2">
+        <div className="relative flex-1">
+          <SearchIcon className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
+          <Input
+            placeholder="Search transactions..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="pl-10"
+          />
         </div>
 
-        {showFilters && (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4 border rounded-lg bg-muted/50">
-            {/* Type Filter */}
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Type</Label>
-              <Select value={typeFilter} onValueChange={(value: "all" | "credit" | "debit") => setTypeFilter(value)}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Types</SelectItem>
-                  <SelectItem value="credit">Credit</SelectItem>
-                  <SelectItem value="debit">Debit</SelectItem>
-                </SelectContent>
-              </Select>
+        {/* Filter popover */}
+        <Popover open={showFilters} onOpenChange={setShowFilters}>
+          <PopoverTrigger asChild>
+            <Button variant="outline" size="sm" className="relative gap-1.5">
+              <FilterIcon className="h-4 w-4" />
+              Filters
+              {activeFilterCount > 0 && (
+                <span className="absolute -top-1.5 -right-1.5 flex h-4 w-4 items-center justify-center rounded-full bg-primary text-[10px] font-semibold text-primary-foreground">
+                  {activeFilterCount}
+                </span>
+              )}
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent align="end" sideOffset={6} className="w-72 p-3">
+            <div className="flex items-center justify-between mb-2">
+              <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground">Filters</span>
+              {hasActiveFilters && (
+                <button onClick={clearFilters} className="text-xs text-muted-foreground hover:text-foreground flex items-center gap-0.5">
+                  <XIcon className="h-3 w-3" /> Clear all
+                </button>
+              )}
             </div>
+            <div className="space-y-2">
+              <div className="space-y-1">
+                <Label className="text-xs">Type</Label>
+                <Select value={typeFilter} onValueChange={(v: "all" | "credit" | "debit") => setTypeFilter(v)}>
+                  <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Types</SelectItem>
+                    <SelectItem value="credit">Credit</SelectItem>
+                    <SelectItem value="debit">Debit</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="space-y-1">
+                <Label className="text-xs">Category</Label>
+                <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                  <SelectTrigger className="h-7 text-xs"><SelectValue /></SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">All Categories</SelectItem>
+                    {categories.map((cat) => <SelectItem key={cat} value={cat}>{cat}</SelectItem>)}
+                  </SelectContent>
+                </Select>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-1">
+                  <Label className="text-xs">Date From</Label>
+                  <Input type="date" className="h-7 text-xs" value={dateFromFilter} onChange={(e) => setDateFromFilter(e.target.value)} />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Date To</Label>
+                  <Input type="date" className="h-7 text-xs" value={dateToFilter} onChange={(e) => setDateToFilter(e.target.value)} />
+                </div>
+              </div>
+              <div className="grid grid-cols-2 gap-2">
+                <div className="space-y-1">
+                  <Label className="text-xs">Min $</Label>
+                  <Input type="number" step="0.01" placeholder="0.00" className="h-7 text-xs" value={amountMinFilter} onChange={(e) => setAmountMinFilter(e.target.value)} />
+                </div>
+                <div className="space-y-1">
+                  <Label className="text-xs">Max $</Label>
+                  <Input type="number" step="0.01" placeholder="0.00" className="h-7 text-xs" value={amountMaxFilter} onChange={(e) => setAmountMaxFilter(e.target.value)} />
+                </div>
+              </div>
+            </div>
+            <Button size="sm" className="w-full mt-3 h-7 text-xs" onClick={() => setShowFilters(false)}>Apply</Button>
+          </PopoverContent>
+        </Popover>
 
-            {/* Category Filter */}
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Category</Label>
-              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
-                <SelectTrigger>
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="all">All Categories</SelectItem>
-                  {categories.map((category) => (
-                    <SelectItem key={category} value={category}>
-                      {category}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
+        {/* Columns popover */}
+        <Popover open={showColumns} onOpenChange={setShowColumns}>
+          <PopoverTrigger asChild>
+            <Button variant="outline" size="sm" className="gap-1.5">
+              <Columns2Icon className="h-4 w-4" />
+              Columns
+            </Button>
+          </PopoverTrigger>
+          <PopoverContent align="end" sideOffset={6} className="w-44 p-3">
+            <span className="text-xs font-semibold uppercase tracking-wide text-muted-foreground block mb-2">Columns</span>
+            <div className="space-y-1.5">
+              {(["date", "description", "category", "type", "amount"] as ColKey[]).map((col) => (
+                <label key={col} className="flex items-center gap-2 cursor-pointer">
+                  <input
+                    type="checkbox"
+                    checked={visibleCols[col]}
+                    onChange={() => toggleCol(col)}
+                    className="rounded border-input accent-primary"
+                  />
+                  <span className="text-sm capitalize">{col}</span>
+                </label>
+              ))}
             </div>
-
-            {/* Date From Filter */}
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Date From</Label>
-              <Input
-                type="date"
-                value={dateFromFilter}
-                onChange={(e) => setDateFromFilter(e.target.value)}
-              />
-            </div>
-
-            {/* Date To Filter */}
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Date To</Label>
-              <Input
-                type="date"
-                value={dateToFilter}
-                onChange={(e) => setDateToFilter(e.target.value)}
-              />
-            </div>
-
-            {/* Amount Min Filter */}
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Min Amount</Label>
-              <Input
-                type="number"
-                step="0.01"
-                placeholder="0.00"
-                value={amountMinFilter}
-                onChange={(e) => setAmountMinFilter(e.target.value)}
-              />
-            </div>
-
-            {/* Amount Max Filter */}
-            <div className="space-y-2">
-              <Label className="text-sm font-medium">Max Amount</Label>
-              <Input
-                type="number"
-                step="0.01"
-                placeholder="0.00"
-                value={amountMaxFilter}
-                onChange={(e) => setAmountMaxFilter(e.target.value)}
-              />
-            </div>
-          </div>
-        )}
+          </PopoverContent>
+        </Popover>
       </div>
 
       {/* Transactions Table */}
@@ -496,103 +496,45 @@ export default function TransactionsPage() {
         <Table>
           <TableHeader>
             <TableRow>
-              <TableHead>
-                <Button
-                  variant="ghost"
-                  onClick={() => handleSort("date")}
-                  className="h-auto p-0 font-medium hover:bg-transparent"
-                >
-                  Date
-                  {renderSortIcon("date")}
-                </Button>
-              </TableHead>
-              <TableHead>
-                <Button
-                  variant="ghost"
-                  onClick={() => handleSort("description")}
-                  className="h-auto p-0 font-medium hover:bg-transparent"
-                >
-                  Description
-                  {renderSortIcon("description")}
-                </Button>
-              </TableHead>
-              <TableHead>
-                <Button
-                  variant="ghost"
-                  onClick={() => handleSort("category")}
-                  className="h-auto p-0 font-medium hover:bg-transparent"
-                >
-                  Category
-                  {renderSortIcon("category")}
-                </Button>
-              </TableHead>
-              <TableHead>
-                <Button
-                  variant="ghost"
-                  onClick={() => handleSort("type")}
-                  className="h-auto p-0 font-medium hover:bg-transparent"
-                >
-                  Type
-                  {renderSortIcon("type")}
-                </Button>
-              </TableHead>
-              <TableHead className="text-right">
-                <Button
-                  variant="ghost"
-                  onClick={() => handleSort("amount")}
-                  className="h-auto p-0 font-medium hover:bg-transparent"
-                >
-                  Amount
-                  {renderSortIcon("amount")}
-                </Button>
-              </TableHead>
-              {isAdmin && <TableHead className="w-[50px]"></TableHead>}
+              {visibleCols.date && <TableHead><Button variant="ghost" onClick={() => handleSort("date")} className="h-auto p-0 font-medium hover:bg-transparent">Date{renderSortIcon("date")}</Button></TableHead>}
+              {visibleCols.description && <TableHead><Button variant="ghost" onClick={() => handleSort("description")} className="h-auto p-0 font-medium hover:bg-transparent">Description{renderSortIcon("description")}</Button></TableHead>}
+              {visibleCols.category && <TableHead><Button variant="ghost" onClick={() => handleSort("category")} className="h-auto p-0 font-medium hover:bg-transparent">Category{renderSortIcon("category")}</Button></TableHead>}
+              {visibleCols.type && <TableHead><Button variant="ghost" onClick={() => handleSort("type")} className="h-auto p-0 font-medium hover:bg-transparent">Type{renderSortIcon("type")}</Button></TableHead>}
+              {visibleCols.amount && <TableHead className="text-right"><Button variant="ghost" onClick={() => handleSort("amount")} className="h-auto p-0 font-medium hover:bg-transparent">Amount{renderSortIcon("amount")}</Button></TableHead>}
+              {isAdmin && <TableHead className="w-[50px]" />}
             </TableRow>
           </TableHeader>
           <TableBody>
             {paginatedTransactions.map((transaction) => (
               <TableRow key={transaction.id}>
-                <TableCell>{transaction.date}</TableCell>
-                <TableCell>{transaction.description}</TableCell>
-                <TableCell>{transaction.category}</TableCell>
-                <TableCell>
-                  <Badge
-                    variant={transaction.type === "credit" ? "default" : "secondary"}
-                  >
-                    {transaction.type}
-                  </Badge>
-                </TableCell>
-                <TableCell className="text-right font-medium">
-                  <div className="flex items-center justify-end gap-1">
-                    {transaction.type === "credit" ? (
-                      <>
-                        <ArrowUpIcon className="h-4 w-4 text-green-500" />
-                        <span className="text-green-600">
-                          +${transaction.amount.toFixed(2)}
-                        </span>
-                      </>
-                    ) : (
-                      <>
-                        <ArrowDownIcon className="h-4 w-4 text-red-500" />
-                        <span className="text-red-600">
-                          -${transaction.amount.toFixed(2)}
-                        </span>
-                      </>
-                    )}
-                  </div>
-                </TableCell>
+                {visibleCols.date && <TableCell>{transaction.date}</TableCell>}
+                {visibleCols.description && <TableCell>{transaction.description}</TableCell>}
+                {visibleCols.category && <TableCell>{transaction.category}</TableCell>}
+                {visibleCols.type && (
+                  <TableCell>
+                    <Badge variant={transaction.type === "credit" ? "default" : "secondary"}>{transaction.type}</Badge>
+                  </TableCell>
+                )}
+                {visibleCols.amount && (
+                  <TableCell className="text-right font-medium">
+                    <div className="flex items-center justify-end gap-1">
+                      {transaction.type === "credit" ? (
+                        <><ArrowUpIcon className="h-4 w-4 text-green-500" /><span className="text-green-600">+${transaction.amount.toFixed(2)}</span></>
+                      ) : (
+                        <><ArrowDownIcon className="h-4 w-4 text-red-500" /><span className="text-red-600">-${transaction.amount.toFixed(2)}</span></>
+                      )}
+                    </div>
+                  </TableCell>
+                )}
                 {isAdmin && (
                   <TableCell>
                     <DropdownMenu>
                       <DropdownMenuTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          <MoreHorizontalIcon className="h-4 w-4" />
-                        </Button>
+                        <Button variant="ghost" size="sm"><MoreHorizontalIcon className="h-4 w-4" /></Button>
                       </DropdownMenuTrigger>
                       <DropdownMenuContent align="end">
                         <DropdownMenuItem onClick={() => openEditDialog(transaction)}>
-                          <EditIcon className="h-4 w-4 mr-2" />
-                          Edit
+                          <EditIcon className="h-4 w-4 mr-2" />Edit
                         </DropdownMenuItem>
                       </DropdownMenuContent>
                     </DropdownMenu>

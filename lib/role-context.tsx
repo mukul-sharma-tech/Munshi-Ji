@@ -1,6 +1,6 @@
 "use client";
 
-import { createContext, useContext, useState, type ReactNode } from "react";
+import { createContext, useContext, useState, useEffect, type ReactNode } from "react";
 
 export type Role = "Admin" | "Viewer";
 
@@ -10,7 +10,18 @@ const RoleContext = createContext<{
 }>({ role: "Admin", setRole: () => {} });
 
 export function RoleProvider({ children }: { children: ReactNode }) {
-  const [role, setRole] = useState<Role>("Admin");
+  const [role, setRoleState] = useState<Role>("Admin");
+
+  useEffect(() => {
+    const stored = localStorage.getItem("finbro_role") as Role | null;
+    if (stored === "Admin" || stored === "Viewer") setRoleState(stored);
+  }, []);
+
+  function setRole(r: Role) {
+    setRoleState(r);
+    localStorage.setItem("finbro_role", r);
+  }
+
   return <RoleContext.Provider value={{ role, setRole }}>{children}</RoleContext.Provider>;
 }
 
