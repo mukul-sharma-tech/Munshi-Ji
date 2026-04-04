@@ -1,131 +1,212 @@
 "use client";
 
 import Link from "next/link";
-import { useEffect, useState } from "react";
 import { TrendingUp, TrendingDown, DollarSign, ArrowDownLeft, ArrowUpRight, PiggyBank, Home, BarChart2, Heart, ArrowRight, Sparkles, AlertTriangle } from "lucide-react";
-import { Button } from "@/components/ui/button";
 import { BalanceTrendChart } from "@/components/balance-trend-chart";
 import { SpendingBreakdownChart } from "@/components/spending-breakdown-chart";
 import { transactions } from "@/lib/data";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 
 const stats = [
-  { label: "Total Balance",  value: "₹55,083.93", change: "+2.5%",  trend: "up",   sub: "from last month",         icon: DollarSign,    accent: "blue"    },
-  { label: "Total Income",   value: "₹13,220.00", change: "+8.1%",  trend: "up",   sub: "from last month",         icon: ArrowUpRight,  accent: "emerald" },
-  { label: "Total Expenses", value: "₹7,236.15",  change: "-98.3%", trend: "down", sub: "vs ₹9,152.71 last month", icon: ArrowDownLeft, accent: "rose"    },
-  { label: "Savings Rate",   value: "45.3%",      change: "+3.2%",  trend: "up",   sub: "from last month",         icon: PiggyBank,     accent: "violet"  },
+  { label: "Total Balance",  value: "₹55,083.93", change: "+2.5%",  trend: "up",   sub: "from last month",         icon: DollarSign,    accent: "border-l-blue-500",    iconCls: "text-blue-500"    },
+  { label: "Total Income",   value: "₹13,220.00", change: "+8.1%",  trend: "up",   sub: "from last month",         icon: ArrowUpRight,  accent: "border-l-emerald-500", iconCls: "text-emerald-500" },
+  { label: "Total Expenses", value: "₹7,236.15",  change: "−98.3%", trend: "down", sub: "vs ₹9,152.71 last month", icon: ArrowDownLeft, accent: "border-l-rose-500",    iconCls: "text-rose-500"    },
+  { label: "Savings Rate",   value: "45.3%",       change: "+3.2%",  trend: "up",   sub: "from last month",         icon: PiggyBank,     accent: "border-l-violet-500",  iconCls: "text-violet-500"  },
 ];
-
-const accentMap: Record<string, { border: string; iconBg: string; iconColor: string }> = {
-  blue:    { border: "border-blue-500/20",    iconBg: "bg-blue-500/10",    iconColor: "text-blue-500"    },
-  emerald: { border: "border-emerald-500/20", iconBg: "bg-emerald-500/10", iconColor: "text-emerald-500" },
-  rose:    { border: "border-rose-500/20",    iconBg: "bg-rose-500/10",    iconColor: "text-rose-500"    },
-  violet:  { border: "border-violet-500/20",  iconBg: "bg-violet-500/10",  iconColor: "text-violet-500"  },
-};
 
 const insights = [
-  { icon: Home,     accent: "rose",    title: "Highest Spending",   badge: "Housing",   value: "₹26,324.26", note: "Focus on reducing this to save more.", extra: "68% of total expenses",        extraIcon: AlertTriangle, barColor: "bg-rose-500",    barWidth: "68%" },
-  { icon: BarChart2,accent: "amber",   title: "Monthly Comparison", badge: "↓ Falling", value: "98.3%",      note: "vs. ₹9,152.71 last month.",           extra: "Expenses dropped significantly", extraIcon: TrendingDown,   barColor: "bg-amber-500",   barWidth: "18%" },
-  { icon: Heart,    accent: "emerald", title: "Savings Health",     badge: "HEALTHY",   value: "45.3%",      note: "Great job! Keep it up.",              extra: "Above 40% target",               extraIcon: Sparkles,       barColor: "bg-emerald-500", barWidth: "45%" },
+  { icon: Home,      title: "Highest Spending",   badge: "Housing",   badgeCls: "bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-400",   value: "₹26,324.26", valueCls: "text-rose-600 dark:text-rose-400",    note: "Top expense category · 68% of total",  bar: "bg-rose-500",    barW: "68%" },
+  { icon: BarChart2, title: "Monthly Comparison", badge: "Falling",   badgeCls: "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-400", value: "−98.3%",     valueCls: "text-amber-600 dark:text-amber-400",  note: "vs ₹9,152.71 last month",              bar: "bg-amber-500",   barW: "18%" },
+  { icon: Heart,     title: "Savings Health",     badge: "Healthy",   badgeCls: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400", value: "45.3%", valueCls: "text-emerald-600 dark:text-emerald-400", note: "Above 40% target · on track",        bar: "bg-emerald-500", barW: "45%" },
 ];
-
-const insightAccent: Record<string, { border: string; iconBg: string; iconColor: string; badgeClass: string; valueColor: string; extraColor: string }> = {
-  rose:    { border: "border-rose-500/20",    iconBg: "bg-rose-500/10",    iconColor: "text-rose-500",    badgeClass: "bg-rose-500/10 text-rose-500 border-rose-500/20",       valueColor: "text-rose-500",    extraColor: "text-rose-500"    },
-  amber:   { border: "border-amber-500/20",   iconBg: "bg-amber-500/10",   iconColor: "text-amber-500",   badgeClass: "bg-amber-500/10 text-amber-500 border-amber-500/20",     valueColor: "text-amber-500",   extraColor: "text-amber-500"   },
-  emerald: { border: "border-emerald-500/20", iconBg: "bg-emerald-500/10", iconColor: "text-emerald-500", badgeClass: "bg-emerald-500/10 text-emerald-500 border-emerald-500/20", valueColor: "text-emerald-500", extraColor: "text-emerald-500" },
-};
 
 const recent = transactions.slice(0, 6);
 
 export default function DashboardPage() {
-  const [mounted, setMounted] = useState(false);
-  useEffect(() => { setMounted(true); }, []);
-
   return (
-    <div className="p-4 sm:p-6 space-y-6">
-      <div>
-        <h1 className="text-2xl font-bold tracking-tight">Welcome back, Mukul 👋</h1>
-        <p className="text-sm text-muted-foreground mt-0.5">Here&apos;s your financial overview for April 2026.</p>
-      </div>
-
-      <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">
-        {stats.map((s, i) => {
-          const a = accentMap[s.accent];
-          return (
-            <div key={s.label} className={`rounded-xl border ${a.border} bg-card p-4 sm:p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`} style={{ transitionDelay: `${i * 60}ms` }}>
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-sm font-medium text-muted-foreground">{s.label}</span>
-                <div className={`p-1.5 rounded-lg ${a.iconBg}`}><s.icon className={`h-4 w-4 ${a.iconColor}`} /></div>
-              </div>
-              <div className="text-2xl sm:text-3xl font-bold tracking-tight">{s.value}</div>
-              <div className="flex items-center gap-1 mt-1.5">
-                {s.trend === "up" ? <TrendingUp className="h-3.5 w-3.5 text-emerald-500 shrink-0" /> : <TrendingDown className="h-3.5 w-3.5 text-rose-500 shrink-0" />}
-                <span className={`text-sm font-semibold ${s.trend === "up" ? "text-emerald-500" : "text-rose-500"}`}>{s.change}</span>
-                <span className="text-sm text-muted-foreground truncate">{s.sub}</span>
-              </div>
-            </div>
-          );
-        })}
-      </div>
-
-      <div>
-        <h2 className="text-base font-semibold text-muted-foreground uppercase tracking-wider mb-3">Recent Insights</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 sm:gap-4">
-          {insights.map((ins, i) => {
-            const a = insightAccent[ins.accent];
-            return (
-              <div key={ins.title} className={`rounded-xl border ${a.border} bg-card p-5 hover:shadow-md hover:-translate-y-0.5 transition-all duration-200 ${mounted ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"}`} style={{ transitionDelay: `${(i + 4) * 60}ms` }}>
-                <div className="flex items-start justify-between mb-3">
-                  <div className="flex items-center gap-2">
-                    <div className={`p-1.5 rounded-lg ${a.iconBg}`}><ins.icon className={`h-4 w-4 ${a.iconColor}`} /></div>
-                    <span className="text-base font-semibold">{ins.title}</span>
-                  </div>
-                  <span className={`text-sm font-medium px-2 py-0.5 rounded-full border ${a.badgeClass}`}>{ins.badge}</span>
-                </div>
-                <div className={`text-2xl font-bold ${a.valueColor} mb-1`}>{ins.value}</div>
-                <p className="text-sm text-muted-foreground mb-4">{ins.note}</p>
-                <div className="space-y-1">
-                  <div className="flex items-center gap-1 text-sm text-muted-foreground">
-                    <ins.extraIcon className={`h-3.5 w-3.5 ${a.extraColor}`} /><span>{ins.extra}</span>
-                  </div>
-                  <div className="h-1 w-full rounded-full bg-muted overflow-hidden">
-                    <div className={`h-full ${ins.barColor} rounded-full transition-all duration-700`} style={{ width: mounted ? ins.barWidth : "0%", transitionDelay: `${i * 100 + 400}ms` }} />
-                  </div>
-                </div>
-              </div>
-            );
-          })}
+    <div className="p-4 lg:p-8 space-y-8 max-w-7xl mx-auto">
+      {/* Page header */}
+      <div className="flex flex-col gap-1">
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">Dashboard</h1>
+        <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
+          <span>April 2026</span>
+          <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
+          <span>Mukul Sharma</span>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <BalanceTrendChart />
-        <SpendingBreakdownChart />
+      {/* KPI strip */}
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        {stats.map((s) => (
+          <Card key={s.label} className="shadow-none border-border/80">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 py-3">
+              <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{s.label}</CardTitle>
+              <s.icon size={16} className="text-slate-400" />
+            </CardHeader>
+            <CardContent className="pb-4">
+              <div className="text-2xl font-bold tracking-tight">{s.value}</div>
+              <div className="flex items-center gap-1.5 mt-1.5">
+                <span className={`flex items-center gap-0.5 text-xs font-semibold ${s.trend === "up" ? "text-emerald-600" : "text-rose-600"}`}>
+                  {s.trend === "up" ? <TrendingUp size={12} strokeWidth={2.5} /> : <TrendingDown size={12} strokeWidth={2.5} />}
+                  {s.change}
+                </span>
+                <span className="text-[11px] text-muted-foreground font-medium">{s.sub}</span>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
-      <div>
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-base font-semibold text-muted-foreground uppercase tracking-wider">Recent Transactions</h2>
-          <Button variant="ghost" size="sm" className="text-sm gap-1 hover:text-primary" asChild>
-            <Link href="/transactions">Show All <ArrowRight className="h-3 w-3" /></Link>
-          </Button>
+      {/* Main Content Grid */}
+      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6">
+        {/* Left Column (Charts) */}
+        <div className="xl:col-span-2 space-y-6">
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <Card className="col-span-1 lg:col-span-2 shadow-none border-border/80">
+              <CardHeader>
+                <CardTitle>Balance Trend</CardTitle>
+                <CardDescription>Visualizing your wealth over the last 6 months</CardDescription>
+              </CardHeader>
+              <CardContent className="h-[300px]">
+                <BalanceTrendChart />
+              </CardContent>
+            </Card>
+            
+            <Card className="shadow-none border-border/80">
+              <CardHeader>
+                <CardTitle>Spending Categories</CardTitle>
+                <CardDescription>Breakdown by major expense groups</CardDescription>
+              </CardHeader>
+              <CardContent className="h-[300px] flex flex-col justify-center">
+                <SpendingBreakdownChart />
+              </CardContent>
+            </Card>
+
+            <Card className="shadow-none border-border/80">
+              <CardHeader>
+                <CardTitle>Recent Insights</CardTitle>
+                <CardDescription>AI-generated financial observations</CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4 pt-4">
+                {insights.map((ins) => (
+                  <div key={ins.title} className="group">
+                    <div className="flex items-center justify-between mb-1.5">
+                      <div className="flex items-center gap-2">
+                        <ins.icon size={14} className="text-slate-500" />
+                        <span className="text-xs font-semibold text-foreground/80">{ins.title}</span>
+                      </div>
+                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border border-current/20 ${ins.badgeCls}`}>{ins.badge}</span>
+                    </div>
+                    <div className="flex items-baseline justify-between mb-2">
+                      <span className={`text-base font-bold tabular-nums ${ins.valueCls}`}>{ins.value}</span>
+                      <span className="text-[10px] text-muted-foreground font-medium">{ins.note}</span>
+                    </div>
+                    <div className="h-1 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
+                      <div className={`h-full ${ins.bar} rounded-full transition-all duration-500`} style={{ width: ins.barW }} />
+                    </div>
+                  </div>
+                ))}
+              </CardContent>
+            </Card>
+          </div>
         </div>
-        <div className="rounded-xl border border-border overflow-hidden">
-          {recent.map((tx) => (
-            <div key={tx.id} className="flex items-center justify-between px-4 py-3 hover:bg-muted/40 transition-colors border-b border-border last:border-0">
-              <div className="flex items-center gap-3">
-                <div className={`p-1.5 rounded-lg ${tx.type === "credit" ? "bg-emerald-500/10" : "bg-rose-500/10"}`}>
-                  {tx.type === "credit" ? <TrendingUp className="h-3.5 w-3.5 text-emerald-500" /> : <TrendingDown className="h-3.5 w-3.5 text-rose-500" />}
+
+        {/* Right Column (Transactions + Info) */}
+        <div className="xl:col-span-1 space-y-6">
+          <Card className="shadow-none border-border/80">
+            <CardHeader className="flex flex-row items-center justify-between space-y-0">
+              <div>
+                <CardTitle>Recent Transactions</CardTitle>
+                <CardDescription>Last 7 days of activity</CardDescription>
+              </div>
+              <Button variant="ghost" size="xs" asChild className="text-muted-foreground hover:text-foreground -mr-2">
+                <Link href="/transactions">
+                  View All <ArrowRight size={12} className="ml-1" />
+                </Link>
+              </Button>
+            </CardHeader>
+            <CardContent className="p-0">
+              <div className="divide-y divide-border/60">
+                {recent.map((tx) => (
+                  <div key={tx.id} className="flex items-center justify-between px-4 py-3 hover:bg-slate-50 dark:hover:bg-slate-900/40 transition-colors cursor-pointer group">
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className={`w-9 h-9 rounded-md flex items-center justify-center shrink-0 border ${tx.type === "credit" ? "bg-emerald-50/50 border-emerald-100 text-emerald-600 dark:bg-emerald-500/10 dark:border-emerald-500/20" : "bg-rose-50/50 border-rose-100 text-rose-600 dark:bg-rose-500/10 dark:border-rose-500/20"}`}>
+                        {tx.type === "credit" ? <TrendingUp size={14} /> : <TrendingDown size={14} />}
+                      </div>
+                      <div className="min-w-0">
+                        <p className="text-sm font-semibold text-foreground truncate group-hover:text-primary transition-colors">{tx.description}</p>
+                        <p className="text-xs text-muted-foreground mt-0.5">{tx.date} · {tx.category}</p>
+                      </div>
+                    </div>
+                    <div className="text-right ml-3">
+                      <span className={`text-sm font-bold tabular-nums ${tx.type === "credit" ? "text-emerald-600 dark:text-emerald-400" : "text-foreground"}`}>
+                        {tx.type === "credit" ? "+" : ""}₹{tx.amount.toLocaleString()}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+              <div className="p-4 pt-2">
+                <Button variant="outline" className="w-full text-xs font-semibold h-9" asChild>
+                  <Link href="/transactions">View More History</Link>
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
+
+          {/* New Minimal Info Section */}
+          <Card className="shadow-none border-border/80 bg-slate-50/50 dark:bg-slate-900/10">
+            <CardHeader className="py-4">
+              <CardTitle className="text-sm flex items-center gap-2">
+                <Sparkles size={16} className="text-primary" />
+                Smart Controls
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4 pb-5">
+              <div className="space-y-2">
+                <div className="flex items-center justify-between text-xs font-medium">
+                  <span className="text-muted-foreground">Monthly Spending Limit</span>
+                  <span className="text-foreground">₹42,300 / ₹65,000</span>
                 </div>
-                <div>
-                  <p className="text-sm font-medium">{tx.description}</p>
-                  <p className="text-xs text-muted-foreground">{tx.date} · {tx.category}</p>
+                <div className="h-1.5 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                  <div className="h-full bg-primary rounded-full transition-all duration-700" style={{ width: "65%" }} />
                 </div>
               </div>
-              <span className={`text-sm font-bold tabular-nums ${tx.type === "credit" ? "text-emerald-500" : "text-rose-500"}`}>
-                {tx.type === "credit" ? "+" : "−"}₹{tx.amount.toFixed(2)}
-              </span>
-            </div>
-          ))}
+
+              <div className="pt-2">
+                <div className="rounded-md border border-slate-200 dark:border-slate-800 p-3 bg-white dark:bg-slate-950 flex items-center justify-between">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-emerald-50 dark:bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+                      <Heart size={14} />
+                    </div>
+                    <div>
+                      <p className="text-xs font-bold">Auto-Savings Active</p>
+                      <p className="text-[10px] text-muted-foreground">₹2.5k saved this month</p>
+                    </div>
+                  </div>
+                  <Button variant="ghost" size="xs" className="h-7 text-[10px] font-bold">Manage</Button>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-2 gap-2 pt-1">
+                <Button variant="outline" size="sm" className="h-8 text-[10px] font-bold gap-2">
+                  <AlertTriangle size={12} className="text-amber-500" />
+                  Audit Log
+                </Button>
+                <Button variant="outline" size="sm" className="h-8 text-[10px] font-bold gap-2">
+                  <BarChart2 size={12} className="text-blue-500" />
+                  Limits
+                </Button>
+              </div>
+            </CardContent>
+          </Card>
         </div>
       </div>
     </div>

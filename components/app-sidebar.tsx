@@ -1,45 +1,27 @@
 "use client";
 
 import {
-  LayoutDashboard,
-  ArrowLeftRight,
-  Lightbulb,
-  Settings,
-  HelpCircle,
-  PiggyBank,
-  UserCircle,
-  User,
-  CreditCard,
-  LogOut,
+  LayoutDashboard, ArrowLeftRight, Lightbulb,
+  HelpCircle, PiggyBank, UserCircle, User, CreditCard, LogOut,
+  Mic,
 } from "lucide-react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuSeparator,
-  DropdownMenuTrigger,
+  DropdownMenu, DropdownMenuContent, DropdownMenuItem,
+  DropdownMenuSeparator, DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import {
-  Sidebar,
-  SidebarContent,
-  SidebarFooter,
-  SidebarGroup,
-  SidebarGroupContent,
-  SidebarGroupLabel,
-  SidebarHeader,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarSeparator,
-  useSidebar,
+  Sidebar, SidebarContent, SidebarFooter, SidebarGroup,
+  SidebarGroupContent, SidebarHeader, SidebarMenu,
+  SidebarMenuButton, SidebarMenuItem, useSidebar,
 } from "@/components/ui/sidebar";
 
 const navItems = [
   { title: "Dashboard",    icon: LayoutDashboard, href: "/dashboard"    },
   { title: "Transactions", icon: ArrowLeftRight,  href: "/transactions" },
   { title: "Insights",     icon: Lightbulb,       href: "/insights"     },
-  // { title: "Settings",     icon: Settings,        href: "/settings"     },
+  { title: "CA Munshi",    icon: Mic,             href: "/ca-munshi"    },
 ];
 
 const footerItems = [
@@ -49,83 +31,90 @@ const footerItems = [
 export function AppSidebar() {
   const { state } = useSidebar();
   const collapsed = state === "collapsed";
+  const pathname = usePathname();
 
   return (
-    <Sidebar collapsible="icon">
-      <SidebarHeader className="px-4 py-5">
-        {collapsed ? (
-          <PiggyBank strokeWidth={1.5} className="mx-auto text-sidebar-foreground" />
-        ) : (
-          <div className="flex flex-col gap-0.5">
-            <span className="text-xs font-medium text-sidebar-foreground/50 uppercase tracking-widest">
-              FinBro
-            </span>
-            <span className="text-lg font-semibold text-sidebar-foreground leading-tight">
-              Finance Manager
-            </span>
-          </div>
-        )}
+    <Sidebar collapsible="icon" className="border-r border-border">
+      <SidebarHeader className="px-3 py-3 border-b border-border">
+        <Link href="/" className="flex items-center gap-2 hover:opacity-80 transition-opacity">
+          {collapsed ? (
+            <PiggyBank size={16} strokeWidth={1.5} className="mx-auto text-slate-500" />
+          ) : (
+            <div className="flex items-center gap-2">
+              <PiggyBank size={16} strokeWidth={1.5} className="text-primary shrink-0" />
+              <div>
+                <p className="text-xs font-semibold text-foreground leading-none">FinBro</p>
+                <p className="text-[10px] text-muted-foreground leading-none mt-0.5">Finance Manager</p>
+              </div>
+            </div>
+          )}
+        </Link>
       </SidebarHeader>
 
-      <SidebarSeparator />
-
-      <SidebarContent>
+      <SidebarContent className="py-1">
         <SidebarGroup>
           <SidebarGroupContent>
             <SidebarMenu>
-              {navItems.map((item) => (
-                <SidebarMenuItem key={item.title}>
-                  <SidebarMenuButton asChild tooltip={item.title}>
-                    <a href={item.href}>
-                      <item.icon />
-                      <span>{item.title}</span>
-                    </a>
-                  </SidebarMenuButton>
-                </SidebarMenuItem>
-              ))}
+              {navItems.map((item) => {
+                const active = pathname === item.href;
+                return (
+                  <SidebarMenuItem key={item.title}>
+                    <SidebarMenuButton
+                      asChild
+                      tooltip={item.title}
+                      isActive={active}
+                      className={`h-8 text-xs rounded-md ${active ? "bg-accent text-foreground font-medium" : "text-muted-foreground hover:text-foreground hover:bg-accent"}`}
+                    >
+                      <Link href={item.href}>
+                        <item.icon size={16} className={active ? "text-primary" : "text-slate-500"} />
+                        <span>{item.title}</span>
+                      </Link>
+                    </SidebarMenuButton>
+                  </SidebarMenuItem>
+                );
+              })}
             </SidebarMenu>
           </SidebarGroupContent>
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter>
-        <SidebarSeparator />
+      <SidebarFooter className="py-1 border-t border-border">
         <SidebarMenu>
           {footerItems.map((item) => (
             <SidebarMenuItem key={item.title}>
-              <SidebarMenuButton asChild tooltip={item.title}>
-                <a href={item.href}>
-                  <item.icon />
+              <SidebarMenuButton
+                asChild
+                tooltip={item.title}
+                className="h-8 text-xs text-muted-foreground hover:text-foreground hover:bg-accent rounded-md"
+              >
+                <Link href={item.href}>
+                  <item.icon size={16} className="text-slate-500" />
                   <span>{item.title}</span>
-                </a>
+                </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           ))}
           <SidebarMenuItem>
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
-                <SidebarMenuButton tooltip="Profile">
-                  <UserCircle />
+                <SidebarMenuButton
+                  tooltip="Profile"
+                  className="h-8 text-xs text-muted-foreground hover:text-foreground hover:bg-accent rounded-md"
+                >
+                  <UserCircle size={16} className="text-slate-500" />
                   <span>Profile</span>
                 </SidebarMenuButton>
               </DropdownMenuTrigger>
-              <DropdownMenuContent side="right" align="end" className="w-48">
-                <DropdownMenuItem asChild>
-                  <Link href="/profile">
-                    <User className="mr-2 h-4 w-4" />
-                    Profile Settings
-                  </Link>
+              <DropdownMenuContent side="right" align="end" className="w-44 text-xs">
+                <DropdownMenuItem asChild className="text-xs h-8">
+                  <Link href="/profile"><User size={14} className="mr-2 text-slate-500" />Profile Settings</Link>
                 </DropdownMenuItem>
-                <DropdownMenuItem asChild>
-                  <Link href="/billing">
-                    <CreditCard className="mr-2 h-4 w-4" />
-                    Billing
-                  </Link>
+                <DropdownMenuItem asChild className="text-xs h-8">
+                  <Link href="/billing"><CreditCard size={14} className="mr-2 text-slate-500" />Billing</Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />
-                <DropdownMenuItem className="text-destructive focus:text-destructive">
-                  <LogOut className="mr-2 h-4 w-4" />
-                  Logout
+                <DropdownMenuItem className="text-xs h-8 text-destructive focus:text-destructive">
+                  <LogOut size={14} className="mr-2" />Logout
                 </DropdownMenuItem>
               </DropdownMenuContent>
             </DropdownMenu>

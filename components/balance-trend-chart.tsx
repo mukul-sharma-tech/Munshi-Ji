@@ -19,41 +19,42 @@ const chartConfig = {
 
 export function BalanceTrendChart() {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle>Balance Trend</CardTitle>
-        <CardDescription>Visualizing your net worth over the last 6 months</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <ChartContainer config={chartConfig} className="h-[220px] sm:h-[250px] w-full">
-          <LineChart data={data} margin={{ left: 12, right: 12 }}>
-            <CartesianGrid vertical={false} />
-            <XAxis dataKey="month" tickLine={false} axisLine={false} tickMargin={8} />
-            <YAxis
-              tickLine={false}
-              axisLine={false}
-              tickMargin={8}
-              tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`}
+    <ChartContainer config={chartConfig} className="h-full w-full">
+      <LineChart data={data} margin={{ left: -10, right: 12, top: 10, bottom: 0 }}>
+        <CartesianGrid vertical={false} strokeDasharray="3 3" opacity={0.4} />
+        <XAxis
+          dataKey="month"
+          tickLine={false}
+          axisLine={false}
+          tickMargin={12}
+          tick={{ fontSize: 11, fontWeight: 500, fill: "var(--color-muted-foreground)" }}
+        />
+        <YAxis
+          tickLine={false}
+          axisLine={false}
+          tickMargin={12}
+          tick={{ fontSize: 11, fontWeight: 500, fill: "var(--color-muted-foreground)" }}
+          tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`}
+        />
+        <ChartTooltip
+          cursor={{ stroke: "var(--color-border)", strokeWidth: 1.5 }}
+          content={
+            <ChartTooltipContent
+              className="bg-background border-border shadow-md"
+              labelFormatter={(v) => v}
+              formatter={(value) => [`₹${Number(value).toLocaleString()}`, "Balance"]}
             />
-            <ChartTooltip
-              content={
-                <ChartTooltipContent
-                  labelFormatter={(v) => v}
-                  formatter={(value) => [`₹${Number(value).toLocaleString()}`, "Balance"]}
-                />
-              }
-            />
-            <Line
-              dataKey="balance"
-              type="monotone"
-              stroke="var(--color-balance)"
-              strokeWidth={2.5}
-              dot={{ r: 4, fill: "var(--color-balance)" }}
-              activeDot={{ r: 6 }}
-            />
-          </LineChart>
-        </ChartContainer>
-      </CardContent>
-    </Card>
+          }
+        />
+        <Line
+          dataKey="balance"
+          type="monotone"
+          stroke="var(--color-balance)"
+          strokeWidth={3}
+          dot={{ r: 3, fill: "var(--color-balance)", strokeWidth: 0 }}
+          activeDot={{ r: 5, strokeWidth: 0 }}
+        />
+      </LineChart>
+    </ChartContainer>
   );
 }

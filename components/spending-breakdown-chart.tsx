@@ -39,23 +39,23 @@ function CustomTooltip({ active, payload }: { active?: boolean; payload?: { valu
 
 export function SpendingBreakdownChart() {
   return (
-    <Card className="flex flex-col">
-      <CardHeader className="items-center pb-0">
-        <CardTitle>Spending Breakdown</CardTitle>
-        <CardDescription>Major expenditure categories for the current period</CardDescription>
-      </CardHeader>
-      <CardContent className="flex-1 pb-0">
-        <ChartContainer config={chartConfig} className="mx-auto aspect-square max-h-[300px]">
-          <PieChart>
-            <Pie data={chartData} dataKey="amount" nameKey="category" />
-            <Tooltip content={<CustomTooltip />} />
-            <ChartLegend
-              content={<ChartLegendContent nameKey="category" />}
-              className="-translate-y-2 flex-wrap gap-2 [&>*]:basis-1/3 [&>*]:justify-center"
-            />
-          </PieChart>
-        </ChartContainer>
-      </CardContent>
-    </Card>
+    <ChartContainer config={chartConfig} className="mx-auto aspect-square h-full w-full">
+      <PieChart>
+        <Pie
+          data={chartData}
+          dataKey="amount"
+          nameKey="category"
+          innerRadius={50}
+          outerRadius={80}
+          strokeWidth={2}
+          stroke="var(--background)"
+        />
+        <Tooltip content={<CustomTooltip />} />
+        <ChartLegend
+          content={<ChartLegendContent nameKey="category" />}
+          className="flex-wrap gap-x-4 gap-y-1 justify-center mt-4 text-[11px] font-medium"
+        />
+      </PieChart>
+    </ChartContainer>
   );
 }

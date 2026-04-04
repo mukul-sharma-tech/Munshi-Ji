@@ -3,6 +3,7 @@ import { Inter } from "next/font/google";
 import "./globals.css";
 import { Providers } from "@/components/providers";
 import { ConditionalLayout } from "@/components/conditional-layout";
+import { MunshiChat } from "@/components/munshi-chat";
 
 const inter = Inter({ variable: "--font-inter", subsets: ["latin"] });
 
@@ -28,6 +29,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <body className="min-h-full">
         <Providers>
           <ConditionalLayout>{children}</ConditionalLayout>
+          <MunshiChat />
         </Providers>
       </body>
     </html>
