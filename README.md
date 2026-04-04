@@ -4,66 +4,74 @@ MunshiJi is a state-of-the-art personal finance management dashboard built with 
 
 ![MunshiJi Banner](https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=2000&auto=format&fit=crop)
 
-## ✨ Features
+## ✨ New Features
 
-- **📊 Enterprise Dashboard**: A high-density, glassmorphic UI displaying real-time Balance Trends, Spending Breakdowns, and KPI stats.
-- **🎙️ CA Munshi (Voice Agent)**: An immersive AI voice consultant powered by **ElevenLabs (Speech Synthesis)** and **Groq (Llama 3 + Whisper)**. Engage in natural, concise financial conversations.
-- **📝 Full Transaction Management**: A robust CRUD list with Add, Edit, and Delete support, powered by local state management.
-- **🔍 Smart Filtering & Search**: Instant filtering by category, date ranges, amount, and transaction type (Credit/Debit).
-- **📥 Data Portability**: Export your entire financial history to CSV with a single click.
-- **📱 Responsive & Optimized**: Fully responsive layouts using UI-sans-serif system fonts for a native OS feel, optimized for legibility and accessibility.
-- **✨ Micro-Animations**: Smooth Framer Motion transitions, floating money animations in the voice suite, and interactive hover effects.
+- **🛡️ Dynamic Onboarding**: A non-blocking landing page experience. Captures user identity (Name & Email) via a stunning glassmorphic full-screen form only when signing in.
+- **👤 Identity Personalization**: Once identified, the entire app (Dashboard, Sidebar, Profile, & Landing Hero) dynamically reflects the user's name and greeting.
+- **🛡️ Role-Based Access (RBAC)**: Integrated a "System Role" toggle (Admin/Viewer) in the sidebar. **Admin** allows full CRUD on transactions, while **Viewer** provides a read-only experience.
+- **🎙️ CA Munshi (Voice Agent)**: An immersive AI voice consultant powered by **ElevenLabs (Speech Synthesis)** and **Groq (Llama 3 + Whisper)**.
+- **📝 Transaction Suite**: Full-featured data table with Add, Edit, Delete (Admin), Search, Sorting, and Advanced Filtering.
+- **🔄 Session Persistence**: User identity, roles, and transaction mutations are all persisted across refreshes via **LocalStorage**.
+- **📥 Data Export**: Instant CSV export functionality for financial history.
+- **📱 Responsive & Optimized**: High-legibility UI-sans-serif font stack, dark/light mode toggle, and hydration-synchronized rendering for zero flicker.
 
-## 🚀 Tech Stack
+## 🎯 Zorvyn Assignment Checklist
 
-- **Framework**: [Next.js 16 (App Router)](https://nextjs.org/)
-- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
-- **UI Components**: [Shadcn UI](https://ui.shadcn.com/)
-- **Animations**: [Framer Motion](https://www.framer.com/motion/)
-- **AI Models**: [Groq (Llama 3-70b)](https://groq.com/)
-- **Voice Intelligence**: [ElevenLabs API](https://elevenlabs.io/) & [Whisper (via Groq)](https://groq.com/whisper)
-- **Icons**: [Lucide React](https://lucide.dev/)
+This project was refined specifically for the Zorvyn Frontend Internship appraisal:
 
-## 🛠️ Getting Started
+- [x] **Financial Summary**: Total Balance, Income, Expenses + KPI cards.
+- [x] **Visualizations**: Balance Trend (Linear) and Spending Breakdown (Donut) charts.
+- [x] **CRUD Operations**: Functional Add/Edit/Delete logic with state persistence.
+- [x] **RBAC Simulation**: Live permission switching via Sidebar toggle.
+- [x] **Insights Section**: Automated data-driven observations.
+- [x] **State Management**: Scalable use of Context API and React local state.
+- [x] **UX Polish**: Toast notifications (Sonner), Framer Motion animations, and responsive layouts.
 
-### 1. Clone the repository
-```bash
-git clone https://github.com/mukul-sharma-tech/FinBro.git
-cd fintech
+## 🚀 Technical Architecture
+
+- **Engine**: Next.js 16 (App Router)
+- **Styling**: Tailwind CSS v4 & Framer Motion
+- **AI Backend**: Groq AI SDK (Llama 3-70b/8b & Whisper)
+- **Voice Edge**: ElevenLabs Speech Synthesis
+- **UI System**: Shadcn UI (Accessible & Modern)
+
+## 🛠️ Quick Start
+
+### 1. Variables
+Create a root `.env` file:
+```env
+GROQ_API_KEY=your_key
+ELEVENLABS_API_KEY=your_key
 ```
 
-### 2. Install dependencies
+### 2. Development
 ```bash
 npm install
-```
-
-### 3. Environment Variables
-Create a `.env` file in the root directory and add your keys:
-```env
-GROQ_API_KEY=your_groq_key_here
-ELEVENLABS_API_KEY=your_elevenlabs_key_here
-```
-
-### 4. Run the development server
-```bash
 npm run dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) to view the application.
+## 🧠 Technical Decisions & Trade-offs
 
-## 🏗️ Project Structure
+### 1. Design-First Philosophy & Aesthetics
+The development began with a "Mental UI Prototype." I visualized the layout and hierarchy before touching the code, sketching the core placements on a physical notepad. My goal was to create a UI that is **simple yet beautiful and deeply informative**, following the minimalist design languages used by big tech companies like **Google, Microsoft, and Amazon**. I also carefully studied the **Zorvyn website** to align my styling choices with your brand's aesthetic, ensuring a seamless and "enterprise-ready" feel.
 
-- `/app`: Next.js 16 App Router (Transactions, Dashboard, CA Munshi).
-- `/app/api`: API Routes for Voice synthesis, Transcription, and Chat logic.
-- `/components`: Reusable UI components (Sidebar, Charts, Chatbot).
-- `/lib`: Helper functions, global state logic, and mock data.
-- `/public`: Static assets and icons.
+### 2. Framework: Next.js 16 (App Router)
+I chose **Next.js** for its unparalleled balance of developer experience and performance. The App Router's server-side rendering (SSR) ensures fast initial loads, while the lightweight nature of the framework allows for seamless client-side state transitions.
 
-## 📸 Screenshots
+### 3. State Management & Simplicity
+For this project, I opted for **React Context API** combined with `useState` and `useEffect`. While Redux or Zustand are great for massive scale, the native Context API provided the simplicity needed to keep the UI snappy and maintainable, specifically for handling identity and role persistence.
 
-- **Dashboard**: Modern data-dense overview with interactive charts.
-- **CA Munshi**: Immersive voice calling interface with floating particle effects.
-- **Transactions**: Advanced data table with search, filter, and export.
+### 4. Going Beyond Frontend (The AI Tier)
+Although this was primarily a frontend evaluation, I decided to implement **CA Munshi** (the AI Voice Agent). I believe in building products that feel complete; adding a real-time conversational layer demonstrates how frontend dashboards can evolve into proactive financial consultants.
 
-## 📜 License
-MIT License. Created by Mukul Sharma.
+### 5. Trade-offs
+A minor trade-off was made by choosing **Local Storage** for data persistence instead of a full database. This was intentional to ensure the project remains portable, easy to review, and has zero latency for the reviewer, while still demonstrating full CRUD capabilities.
+
+## 📝 Additional Notes
+
+- **Known Limitations**: The AI Voice Agent requires an external API key (Groq/ElevenLabs). If keys are not provided, the interface gracefully degrades to show informative placeholders.
+- **Improvements**: Future iterations would include a real-time WebSocket connection for multi-user sync and a more extensive budgeting module.
+- **Context**: This project was built with a focus on "MunshiJi" (the traditional Indian term for an accountant), blending cultural familiarity with futuristic AI tech.
+
+---
+Created by Mukul Sharma for the Zorvyn Fintech Assignment.

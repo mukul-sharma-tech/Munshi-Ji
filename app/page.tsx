@@ -2,7 +2,10 @@
 
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
-import { PiggyBank, TrendingUp, BarChart2, Shield, ArrowRight, Sparkles, DollarSign, Zap, ChevronDown, Wallet, LineChart } from "lucide-react";
+import { PiggyBank, TrendingUp, BarChart2, Shield, ArrowRight, Sparkles, DollarSign, Zap, ChevronDown, Wallet, LineChart, User, Mail, LogIn } from "lucide-react";
+import { useUser } from "@/lib/user-context";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
 
 function useScrollReveal(delay = 0) {
   const ref = useRef<HTMLDivElement>(null);
@@ -39,9 +42,101 @@ function RevealCard({ children, delay = 0 }: { children: React.ReactNode; delay?
 }
 
 export default function LandingPage() {
+  const { user, setUser } = useUser();
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [showLogin, setShowLogin] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const statsReveal = useScrollReveal();
   const featTitle = useScrollReveal();
   const ctaReveal = useScrollReveal();
+
+  const handleJoin = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!name.trim() || !email.trim()) return;
+    setUser({ name, email, isLoggedIn: true });
+    setShowLogin(false);
+  };
+
+  // If user is NOT logged in AND clicked Sign In, show the full-screen premium onboarding
+  if (!user.isLoggedIn && showLogin) {
+    return (
+      <div className="min-h-screen bg-[#04040f] text-white flex flex-col items-center justify-center p-6 relative overflow-hidden">
+        {/* Animated Background Gradients */}
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] rounded-full bg-emerald-500/10 blur-[140px] animate-pulse" />
+          <div className="absolute top-0 right-0 w-[500px] h-[500px] rounded-full bg-violet-600/5 blur-[120px]" />
+          <div className="absolute bottom-0 left-0 w-[400px] h-[400px] rounded-full bg-blue-500/5 blur-[100px]" />
+        </div>
+
+        <div className="relative z-10 w-full max-w-md animate-[fadeInUp_0.7s_ease_forwards]">
+          <div className="flex flex-col items-center mb-10">
+            <button
+              onClick={() => setShowLogin(false)}
+              className="absolute -top-12 left-0 text-[10px] font-bold uppercase tracking-widest text-white/30 hover:text-white transition-colors flex items-center gap-1.5"
+            >
+              <ArrowRight className="h-3 w-3 rotate-180" /> Back to explore
+            </button>
+            <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/25 mb-4 shadow-xl shadow-emerald-500/10">
+              <PiggyBank className="h-10 w-10 text-emerald-400" strokeWidth={1.5} />
+            </div>
+            <h1 className="text-3xl font-extrabold tracking-tight mb-2">Welcome to MunshiJi</h1>
+            <p className="text-sm text-white/40 text-center">Your personal AI-powered financial consultant.<br />Identify yourself to begin the experience.</p>
+          </div>
+
+          <div className="rounded-3xl border border-white/5 bg-white/[0.03] backdrop-blur-xl p-8 shadow-2xl relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-transparent pointer-events-none" />
+            <form onSubmit={handleJoin} className="space-y-5 relative">
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-white/30 ml-1">Your Name</label>
+                <div className="relative group">
+                  <User className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/20 group-focus-within:text-emerald-400 transition-colors" />
+                  <Input
+                    placeholder="e.g. Mukul Sharma"
+                    className="bg-black/40 border-white/10 h-12 pl-10 focus:border-emerald-500/50 transition-all rounded-xl"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              <div className="space-y-2">
+                <label className="text-[10px] font-bold uppercase tracking-widest text-white/30 ml-1">Email Address</label>
+                <div className="relative group">
+                  <Mail className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-white/20 group-focus-within:text-emerald-400 transition-colors" />
+                  <Input
+                    type="email"
+                    placeholder="mukul@example.com"
+                    className="bg-black/40 border-white/10 h-12 pl-10 focus:border-emerald-500/50 transition-all rounded-xl"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    required
+                  />
+                </div>
+              </div>
+
+              <Button
+                type="submit"
+                className="w-full h-12 bg-emerald-500 hover:bg-emerald-400 text-black font-extrabold text-sm rounded-xl transition-all hover:scale-[1.02] active:scale-[0.98] mt-4 flex items-center justify-center gap-2"
+              >
+                Enter Dashboard <LogIn size={16} />
+              </Button>
+            </form>
+          </div>
+        </div>
+
+        <footer className="absolute bottom-8 text-[10px] text-white/10 font-medium tracking-widest uppercase">
+          © 2026 MunshiJi Finance System
+        </footer>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-[#04040f] text-white overflow-x-hidden" style={{ fontFamily: "var(--font-inter, sans-serif)" }}>
@@ -57,9 +152,23 @@ export default function LandingPage() {
           <span className="font-bold text-sm">MunshiJi</span>
           <span className="hidden sm:inline text-xs text-white/30 border border-white/10 rounded-full px-2 py-0.5">Finance Manager</span>
         </div>
-        <div className="flex items-center gap-2">
-          <Link href="/dashboard" className="text-xs text-white/50 hover:text-white transition-colors px-3 py-1.5 rounded-lg hover:bg-white/5">Sign In</Link>
-          <Link href="/dashboard" className="text-xs font-semibold bg-emerald-500 hover:bg-emerald-400 text-black px-4 py-1.5 rounded-lg shadow-lg shadow-emerald-500/25 transition-all hover:scale-105">Get Started</Link>
+        <div className="flex items-center gap-4">
+          {(!mounted || !user.isLoggedIn) ? (
+            <>
+              <button onClick={() => setShowLogin(true)} className="text-xs text-white/50 hover:text-white transition-colors px-3 py-1.5 rounded-lg hover:bg-white/5">Sign In</button>
+              <button onClick={() => setShowLogin(true)} className="text-xs font-semibold bg-emerald-500 hover:bg-emerald-400 text-black px-4 py-1.5 rounded-lg shadow-lg shadow-emerald-500/25 transition-all hover:scale-105">Get Started</button>
+            </>
+          ) : (
+            <div className="flex items-center gap-3">
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full border border-white/5 bg-white/5">
+                <div className="h-4 w-4 rounded-full bg-emerald-500/20 flex items-center justify-center">
+                  <User size={10} className="text-emerald-400" />
+                </div>
+                <span className="text-xs font-bold text-white/60">{user.name}</span>
+              </div>
+              <Link href="/dashboard" className="text-xs font-semibold bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/20 px-4 py-1.5 rounded-lg transition-all">Go to Dashboard</Link>
+            </div>
+          )}
         </div>
       </nav>
 
@@ -75,15 +184,26 @@ export default function LandingPage() {
           </span>
         </h1>
         <p className="mt-6 text-sm sm:text-base text-white/40 max-w-lg leading-relaxed animate-[fadeInUp_0.7s_ease_0.25s_forwards] opacity-0">
-          MunshiJi gives you a beautiful real-time view of your money — track transactions, visualize spending, and grow your savings.
+          MunshiJi {(mounted && user.isLoggedIn) ? `welcomes you, ${user.name}.` : "gives you a beautiful real-time view of your money — track transactions, visualize spending, and grow your savings."}
         </p>
-        <div className="flex flex-col sm:flex-row items-center gap-3 mt-10 animate-[fadeInUp_0.7s_ease_0.4s_forwards] opacity-0">
-          <Link href="/dashboard" className="group flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-sm px-7 py-3 rounded-xl shadow-xl shadow-emerald-500/30 hover:shadow-emerald-500/50 transition-all hover:scale-105">
-            View Your Savings <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
-          </Link>
-          <Link href="/dashboard" className="text-sm text-white/60 hover:text-white border border-white/10 hover:border-white/25 bg-white/3 hover:bg-white/8 px-7 py-3 rounded-xl transition-all hover:scale-105">
-            Explore Dashboard
-          </Link>
+
+        <div className="mt-10 animate-[fadeInUp_0.7s_ease_0.4s_forwards] opacity-0 w-full max-w-md">
+          {(mounted && user.isLoggedIn) ? (
+            <div className="flex items-center justify-center gap-3">
+              <Link href="/dashboard" className="group flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-sm px-7 py-3 rounded-xl shadow-xl shadow-emerald-500/30 hover:shadow-emerald-500/50 transition-all hover:scale-105">
+                View Your Savings <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Link>
+              <Link href="/dashboard" className="text-sm text-white/60 hover:text-white border border-white/10 hover:border-white/25 bg-white/3 hover:bg-white/8 px-7 py-3 rounded-xl transition-all hover:scale-105">
+                Explore Dashboard
+              </Link>
+            </div>
+          ) : (
+            <div className="flex flex-col sm:flex-row items-center justify-center gap-3">
+              <Button onClick={() => setShowLogin(true)} className="group flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-sm px-10 py-6 rounded-xl shadow-xl shadow-emerald-500/30 hover:shadow-emerald-500/50 transition-all hover:scale-105">
+                Sign In Now <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              </Button>
+            </div>
+          )}
         </div>
         <div className="mt-16 flex flex-col items-center gap-1 text-white/20 animate-bounce">
           <span className="text-xs">Scroll to explore</span><ChevronDown className="h-4 w-4" />

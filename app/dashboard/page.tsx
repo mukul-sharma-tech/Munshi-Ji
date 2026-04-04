@@ -2,6 +2,7 @@
 
 import Link from "next/link";
 import { TrendingUp, TrendingDown, DollarSign, ArrowDownLeft, ArrowUpRight, PiggyBank, Home, BarChart2, Heart, ArrowRight, Sparkles, AlertTriangle } from "lucide-react";
+import { useUser } from "@/lib/user-context";
 import { BalanceTrendChart } from "@/components/balance-trend-chart";
 import { SpendingBreakdownChart } from "@/components/spending-breakdown-chart";
 import { transactions } from "@/lib/data";
@@ -30,15 +31,17 @@ const insights = [
 const recent = transactions.slice(0, 6);
 
 export default function DashboardPage() {
+  const { user } = useUser();
+
   return (
     <div className="p-4 lg:p-8 space-y-8 max-w-7xl mx-auto">
       {/* Page header */}
       <div className="flex flex-col gap-1.5">
-        <h1 className="text-2xl font-bold tracking-tight text-foreground">Dashboard</h1>
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">Welcome back, {user.name || "Dashboard"}</h1>
         <div className="flex items-center gap-2.5 text-sm text-muted-foreground font-medium">
           <span>April 2026</span>
           <span className="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700" />
-          <span>Mukul Sharma</span>
+          <span>{user.name || "Guest User"}</span>
         </div>
       </div>
 

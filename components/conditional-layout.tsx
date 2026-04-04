@@ -3,7 +3,6 @@
 import { usePathname } from "next/navigation";
 import { SidebarProvider, SidebarTrigger, SidebarInset } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/app-sidebar";
-import { RoleSwitcher } from "@/components/role-switcher";
 import { ThemeToggle } from "@/components/theme-toggle";
 
 export function ConditionalLayout({ children }: { children: React.ReactNode }) {
@@ -29,7 +28,6 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
             </div>
           </div>
           <div className="flex items-center gap-1.5">
-            <RoleSwitcher />
             <ThemeToggle />
           </div>
         </header>

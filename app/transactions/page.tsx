@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { transactions, type Transaction } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -70,6 +70,22 @@ export default function TransactionsPage() {
   
   // Local state for transactions to allow mutations (Add/Edit/Delete)
   const [localTransactions, setLocalTransactions] = useState<Transaction[]>(transactions);
+  
+  // Persist to localStorage
+  useEffect(() => {
+    const saved = localStorage.getItem("MunshiJi_tx");
+    if (saved) {
+      try {
+        setLocalTransactions(JSON.parse(saved));
+      } catch (e) {
+        console.error("Failed to load transactions", e);
+      }
+    }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem("MunshiJi_tx", JSON.stringify(localTransactions));
+  }, [localTransactions]);
   
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -488,7 +504,20 @@ export default function TransactionsPage() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {paginatedTransactions.map((transaction) => (
+            {paginatedTransactions.length === 0 ? (
+              <TableRow>
+                <TableCell colSpan={6} className="h-48 text-center">
+                  <div className="flex flex-col items-center justify-center text-muted-foreground animate-tw-fade-in">
+                    <SearchIcon size={32} className="mb-3 opacity-20" />
+                    <p className="text-sm font-semibold">No transactions found</p>
+                    <p className="text-[11px] mt-1">Try adjusting your filters or search term</p>
+                    {hasActiveFilters && (
+                      <Button variant="link" size="sm" onClick={clearFilters} className="mt-2 text-primary font-bold">Clear all filters</Button>
+                    )}
+                  </div>
+                </TableCell>
+              </TableRow>
+            ) : paginatedTransactions.map((transaction) => (
               <TableRow key={transaction.id} className="hover:bg-slate-50/80 dark:hover:bg-slate-900/40 transition-colors group">
                 {visibleCols.date && <TableCell className="text-xs font-medium text-slate-500">{transaction.date}</TableCell>}
                 {visibleCols.description && (
