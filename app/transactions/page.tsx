@@ -5,6 +5,7 @@ import { transactions, type Transaction } from "@/lib/data";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import {
   Table,
   TableBody,
@@ -35,7 +36,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Label } from "@/components/ui/label";
+import { useRole } from "@/lib/role-context";
 import {
   ArrowUpIcon,
   ArrowDownIcon,
@@ -47,6 +48,8 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ArrowUpDownIcon,
+  FilterIcon,
+  XIcon,
   ArrowUpIcon as SortAscIcon,
   ArrowDownIcon as SortDescIcon,
 } from "lucide-react";
@@ -57,6 +60,8 @@ type SortField = "date" | "description" | "category" | "type" | "amount";
 type SortOrder = "asc" | "desc";
 
 export default function TransactionsPage() {
+  const { role } = useRole();
+  const isAdmin = role === "Admin";
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState<SortField>("date");
@@ -72,6 +77,15 @@ export default function TransactionsPage() {
     amount: "",
   });
 
+  // Filter states
+  const [typeFilter, setTypeFilter] = useState<"all" | "credit" | "debit">("all");
+  const [categoryFilter, setCategoryFilter] = useState<string>("all");
+  const [dateFromFilter, setDateFromFilter] = useState<string>("");
+  const [dateToFilter, setDateToFilter] = useState<string>("");
+  const [amountMinFilter, setAmountMinFilter] = useState<string>("");
+  const [amountMaxFilter, setAmountMaxFilter] = useState<string>("");
+  const [showFilters, setShowFilters] = useState(false);
+
   // Handle sorting
   const handleSort = (field: SortField) => {
     if (sortBy === field) {
@@ -85,10 +99,29 @@ export default function TransactionsPage() {
 
   // Filter and sort transactions
   const filteredAndSortedTransactions = useMemo(() => {
-    const filtered = transactions.filter((transaction) =>
-      transaction.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      transaction.category.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filtered = transactions.filter((transaction) => {
+      // Search filter
+      const matchesSearch = searchTerm === "" ||
+        transaction.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        transaction.category.toLowerCase().includes(searchTerm.toLowerCase());
+
+      // Type filter
+      const matchesType = typeFilter === "all" || transaction.type === typeFilter;
+
+      // Category filter
+      const matchesCategory = categoryFilter === "all" || transaction.category === categoryFilter;
+
+      // Date range filter
+      const transactionDate = new Date(transaction.date);
+      const matchesDateFrom = dateFromFilter === "" || transactionDate >= new Date(dateFromFilter);
+      const matchesDateTo = dateToFilter === "" || transactionDate <= new Date(dateToFilter);
+
+      // Amount range filter
+      const matchesAmountMin = amountMinFilter === "" || transaction.amount >= parseFloat(amountMinFilter);
+      const matchesAmountMax = amountMaxFilter === "" || transaction.amount <= parseFloat(amountMaxFilter);
+
+      return matchesSearch && matchesType && matchesCategory && matchesDateFrom && matchesDateTo && matchesAmountMin && matchesAmountMax;
+    });
 
     // Sort the filtered transactions
     filtered.sort((a, b) => {
@@ -117,9 +150,29 @@ export default function TransactionsPage() {
     });
 
     return filtered;
-  }, [searchTerm, sortBy, sortOrder]);
+  }, [searchTerm, sortBy, sortOrder, typeFilter, categoryFilter, dateFromFilter, dateToFilter, amountMinFilter, amountMaxFilter]);
 
-  // Paginate transactions
+  // Get unique categories for filter dropdown
+  const categories = useMemo(() => {
+    const uniqueCategories = Array.from(new Set(transactions.map(t => t.category)));
+    return uniqueCategories.sort();
+  }, []);
+
+  // Clear all filters
+  const clearFilters = () => {
+    setTypeFilter("all");
+    setCategoryFilter("all");
+    setDateFromFilter("");
+    setDateToFilter("");
+    setAmountMinFilter("");
+    setAmountMaxFilter("");
+    setSearchTerm("");
+    setCurrentPage(1);
+  };
+
+  // Check if any filters are active
+  const hasActiveFilters = searchTerm !== "" || typeFilter !== "all" || categoryFilter !== "all" ||
+    dateFromFilter !== "" || dateToFilter !== "" || amountMinFilter !== "" || amountMaxFilter !== "";
   const totalPages = Math.ceil(filteredAndSortedTransactions.length / ITEMS_PER_PAGE);
   const paginatedTransactions = useMemo(() => {
     const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
@@ -219,13 +272,14 @@ export default function TransactionsPage() {
             <DownloadIcon className="h-4 w-4 mr-2" />
             Export CSV
           </Button>
-          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-            <DialogTrigger asChild>
-              <Button size="sm">
-                <PlusIcon className="h-4 w-4 mr-2" />
-                Add Transaction
-              </Button>
-            </DialogTrigger>
+          {isAdmin && (
+            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+              <DialogTrigger asChild>
+                <Button size="sm">
+                  <PlusIcon className="h-4 w-4 mr-2" />
+                  Add Transaction
+                </Button>
+              </DialogTrigger>
             <DialogContent>
               <DialogHeader>
                 <DialogTitle>Add Transaction</DialogTitle>
@@ -314,6 +368,7 @@ export default function TransactionsPage() {
               </DialogFooter>
             </DialogContent>
           </Dialog>
+          )}
         </div>
       </div>
 
@@ -326,6 +381,114 @@ export default function TransactionsPage() {
           onChange={(e) => setSearchTerm(e.target.value)}
           className="pl-10"
         />
+      </div>
+
+      {/* Filters */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={() => setShowFilters(!showFilters)}
+            className="flex items-center gap-2"
+          >
+            <FilterIcon className="h-4 w-4" />
+            Filters
+            {hasActiveFilters && (
+              <Badge variant="secondary" className="ml-1 h-5 px-1.5 text-xs">
+                {[searchTerm, typeFilter !== "all" ? typeFilter : "", categoryFilter !== "all" ? categoryFilter : "",
+                  dateFromFilter, dateToFilter, amountMinFilter, amountMaxFilter].filter(Boolean).length}
+              </Badge>
+            )}
+          </Button>
+          {hasActiveFilters && (
+            <Button variant="ghost" size="sm" onClick={clearFilters} className="text-muted-foreground">
+              <XIcon className="h-4 w-4 mr-1" />
+              Clear all
+            </Button>
+          )}
+        </div>
+
+        {showFilters && (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 p-4 border rounded-lg bg-muted/50">
+            {/* Type Filter */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Type</Label>
+              <Select value={typeFilter} onValueChange={(value: "all" | "credit" | "debit") => setTypeFilter(value)}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Types</SelectItem>
+                  <SelectItem value="credit">Credit</SelectItem>
+                  <SelectItem value="debit">Debit</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Category Filter */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Category</Label>
+              <Select value={categoryFilter} onValueChange={setCategoryFilter}>
+                <SelectTrigger>
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">All Categories</SelectItem>
+                  {categories.map((category) => (
+                    <SelectItem key={category} value={category}>
+                      {category}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {/* Date From Filter */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Date From</Label>
+              <Input
+                type="date"
+                value={dateFromFilter}
+                onChange={(e) => setDateFromFilter(e.target.value)}
+              />
+            </div>
+
+            {/* Date To Filter */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Date To</Label>
+              <Input
+                type="date"
+                value={dateToFilter}
+                onChange={(e) => setDateToFilter(e.target.value)}
+              />
+            </div>
+
+            {/* Amount Min Filter */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Min Amount</Label>
+              <Input
+                type="number"
+                step="0.01"
+                placeholder="0.00"
+                value={amountMinFilter}
+                onChange={(e) => setAmountMinFilter(e.target.value)}
+              />
+            </div>
+
+            {/* Amount Max Filter */}
+            <div className="space-y-2">
+              <Label className="text-sm font-medium">Max Amount</Label>
+              <Input
+                type="number"
+                step="0.01"
+                placeholder="0.00"
+                value={amountMaxFilter}
+                onChange={(e) => setAmountMaxFilter(e.target.value)}
+              />
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Transactions Table */}
@@ -383,7 +546,7 @@ export default function TransactionsPage() {
                   {renderSortIcon("amount")}
                 </Button>
               </TableHead>
-              <TableHead className="w-[50px]"></TableHead>
+              {isAdmin && <TableHead className="w-[50px]"></TableHead>}
             </TableRow>
           </TableHeader>
           <TableBody>
@@ -418,21 +581,23 @@ export default function TransactionsPage() {
                     )}
                   </div>
                 </TableCell>
-                <TableCell>
-                  <DropdownMenu>
-                    <DropdownMenuTrigger asChild>
-                      <Button variant="ghost" size="sm">
-                        <MoreHorizontalIcon className="h-4 w-4" />
-                      </Button>
-                    </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end">
-                      <DropdownMenuItem onClick={() => openEditDialog(transaction)}>
-                        <EditIcon className="h-4 w-4 mr-2" />
-                        Edit
-                      </DropdownMenuItem>
-                    </DropdownMenuContent>
-                  </DropdownMenu>
-                </TableCell>
+                {isAdmin && (
+                  <TableCell>
+                    <DropdownMenu>
+                      <DropdownMenuTrigger asChild>
+                        <Button variant="ghost" size="sm">
+                          <MoreHorizontalIcon className="h-4 w-4" />
+                        </Button>
+                      </DropdownMenuTrigger>
+                      <DropdownMenuContent align="end">
+                        <DropdownMenuItem onClick={() => openEditDialog(transaction)}>
+                          <EditIcon className="h-4 w-4 mr-2" />
+                          Edit
+                        </DropdownMenuItem>
+                      </DropdownMenuContent>
+                    </DropdownMenu>
+                  </TableCell>
+                )}
               </TableRow>
             ))}
           </TableBody>
