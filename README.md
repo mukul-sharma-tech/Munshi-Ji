@@ -53,25 +53,28 @@ npm run dev
 ## 🧠 Technical Decisions & Trade-offs
 
 ### 1. Design-First Philosophy & Aesthetics
-The development began with a "Mental UI Prototype." I visualized the layout and hierarchy before touching the code, sketching the core placements on a physical notepad. My goal was to create a UI that is **simple yet beautiful and deeply informative**, following the minimalist design languages used by big tech companies like **Google, Microsoft, and Amazon**. I also carefully studied the **Zorvyn website** to align my styling choices with your brand's aesthetic, ensuring a seamless and "enterprise-ready" feel.
+The development began with a "Mental UI Prototype." I visualized the layout and hierarchy before touching the code, sketching the core placements on a physical notepad. My goal was to create a UI that is **simple yet beautiful and deeply informative**, following the minimalist design languages used by big tech companies like **Google, Microsoft, and Amazon**. 
+
+To achieve this, I used **Shadcn UI** for its highly aesthetic, accessible, and high-performance pre-built components. This allowed me to maintain a consistent design system while focusing on building unique business logic. I also carefully studied the **Zorvyn website** to align my styling choices with your brand's aesthetic.
 
 ### 2. Framework: Next.js 16 (App Router)
 I chose **Next.js** for its unparalleled balance of developer experience and performance. The App Router's server-side rendering (SSR) ensures fast initial loads, while the lightweight nature of the framework allows for seamless client-side state transitions.
 
 ### 3. State Management & Simplicity
-For this project, I opted for **React Context API** combined with `useState` and `useEffect`. While Redux or Zustand are great for massive scale, the native Context API provided the simplicity needed to keep the UI snappy and maintainable, specifically for handling identity and role persistence.
+For this project, I opted for **React Context API** combined with `useState` and `useEffect`. While Redux or Zustand are great for massive scale, the native Context API provided the simplicity needed to keep the UI snappy and maintainable, specifically for handling identity, RBAC (Role-Based Access Control), and persistence.
 
 ### 4. Going Beyond Frontend (The AI Tier)
 Although this was primarily a frontend evaluation, I decided to implement **CA Munshi** (the AI Voice Agent). I believe in building products that feel complete; adding a real-time conversational layer demonstrates how frontend dashboards can evolve into proactive financial consultants.
 
-### 5. Trade-offs
-A minor trade-off was made by choosing **Local Storage** for data persistence instead of a full database. This was intentional to ensure the project remains portable, easy to review, and has zero latency for the reviewer, while still demonstrating full CRUD capabilities.
+### 5. Trade-offs (Storage Strategy)
+A deliberate trade-off was made by choosing **Local Storage** for data persistence instead of a full database. This was intentional to ensure the project remains portable, easy to review, and has zero latency for the reviewer, while still demonstrating full CRUD and session persistence capabilities.
 
 ## 📝 Additional Notes
 
-- **Known Limitations**: The AI Voice Agent requires an external API key (Groq/ElevenLabs). If keys are not provided, the interface gracefully degrades to show informative placeholders.
-- **Improvements**: Future iterations would include a real-time WebSocket connection for multi-user sync and a more extensive budgeting module.
-- **Context**: This project was built with a focus on "MunshiJi" (the traditional Indian term for an accountant), blending cultural familiarity with futuristic AI tech.
+- **Role-Based Access (RBAC)**: I implemented a fully interactive system role toggle. Switching from **Admin** to **Viewer** in the sidebar live-updates the dashboard and transaction table permissions, demonstrating a clear understanding of dynamic data security.
+- **Hydration Synchronization**: Since I use LocalStorage for user sessions, I implemented a 'mounted' state check to prevent Next.js hydration mismatches. This ensures a clean, error-free browser console and a smooth visual experience.
+- **Graceful Degradation**: The AI Voice Agent requires external API keys (Groq/ElevenLabs). If keys are not provided, the interface gracefully degrades to show informative placeholders.
+- **MunshiJi Brand Context**: This project was built with a focus on "MunshiJi" (the traditional Indian term for an accountant), blending cultural familiarity with futuristic AI tech.
 
 ---
 Created by Mukul Sharma for the Zorvyn Fintech Assignment.
