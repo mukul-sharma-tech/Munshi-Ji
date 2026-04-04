@@ -1,36 +1,69 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💰 MunshiJi — Your AI Financial Companion
 
-## Getting Started
+MunshiJi is a state-of-the-art personal finance management dashboard built with **Next.js 16**, featuring an enterprise-grade UI and an autonomous AI voice agent (**CA Munshi**) that provides real-time financial consulting.
 
-First, run the development server:
+![MunshiJi Banner](https://images.unsplash.com/photo-1554224155-6726b3ff858f?q=80&w=2000&auto=format&fit=crop)
 
+## ✨ Features
+
+- **📊 Enterprise Dashboard**: A high-density, glassmorphic UI displaying real-time Balance Trends, Spending Breakdowns, and KPI stats.
+- **🎙️ CA Munshi (Voice Agent)**: An immersive AI voice consultant powered by **ElevenLabs (Speech Synthesis)** and **Groq (Llama 3 + Whisper)**. Engage in natural, concise financial conversations.
+- **📝 Full Transaction Management**: A robust CRUD list with Add, Edit, and Delete support, powered by local state management.
+- **🔍 Smart Filtering & Search**: Instant filtering by category, date ranges, amount, and transaction type (Credit/Debit).
+- **📥 Data Portability**: Export your entire financial history to CSV with a single click.
+- **📱 Responsive & Optimized**: Fully responsive layouts using UI-sans-serif system fonts for a native OS feel, optimized for legibility and accessibility.
+- **✨ Micro-Animations**: Smooth Framer Motion transitions, floating money animations in the voice suite, and interactive hover effects.
+
+## 🚀 Tech Stack
+
+- **Framework**: [Next.js 16 (App Router)](https://nextjs.org/)
+- **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
+- **UI Components**: [Shadcn UI](https://ui.shadcn.com/)
+- **Animations**: [Framer Motion](https://www.framer.com/motion/)
+- **AI Models**: [Groq (Llama 3-70b)](https://groq.com/)
+- **Voice Intelligence**: [ElevenLabs API](https://elevenlabs.io/) & [Whisper (via Groq)](https://groq.com/whisper)
+- **Icons**: [Lucide React](https://lucide.dev/)
+
+## 🛠️ Getting Started
+
+### 1. Clone the repository
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+git clone https://github.com/mukul-sharma-tech/FinBro.git
+cd fintech
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Install dependencies
+```bash
+npm install
+```
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### 3. Environment Variables
+Create a `.env` file in the root directory and add your keys:
+```env
+GROQ_API_KEY=your_groq_key_here
+ELEVENLABS_API_KEY=your_elevenlabs_key_here
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 4. Run the development server
+```bash
+npm run dev
+```
 
-## Learn More
+Open [http://localhost:3000](http://localhost:3000) to view the application.
 
-To learn more about Next.js, take a look at the following resources:
+## 🏗️ Project Structure
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- `/app`: Next.js 16 App Router (Transactions, Dashboard, CA Munshi).
+- `/app/api`: API Routes for Voice synthesis, Transcription, and Chat logic.
+- `/components`: Reusable UI components (Sidebar, Charts, Chatbot).
+- `/lib`: Helper functions, global state logic, and mock data.
+- `/public`: Static assets and icons.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📸 Screenshots
 
-## Deploy on Vercel
+- **Dashboard**: Modern data-dense overview with interactive charts.
+- **CA Munshi**: Immersive voice calling interface with floating particle effects.
+- **Transactions**: Advanced data table with search, filter, and export.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 📜 License
+MIT License. Created by Mukul Sharma.

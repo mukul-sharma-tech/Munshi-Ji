@@ -18,19 +18,19 @@ function useScrollReveal(delay = 0) {
 }
 
 const features = [
-  { icon: TrendingUp, title: "Smart Insights",       desc: "AI-powered spending analysis with actionable recommendations.",     color: "from-emerald-500/20 to-transparent", glow: "#10b981", iconColor: "#10b981" },
-  { icon: BarChart2,  title: "Visual Analytics",     desc: "Beautiful interactive charts that make your finances effortless.",  color: "from-violet-500/20 to-transparent",  glow: "#8b5cf6", iconColor: "#8b5cf6" },
-  { icon: Shield,     title: "Role-Based Access",    desc: "Admin and Viewer roles so you control who sees and edits data.",    color: "from-blue-500/20 to-transparent",    glow: "#3b82f6", iconColor: "#3b82f6" },
-  { icon: DollarSign, title: "Transaction Tracking", desc: "Log, filter, sort and export every transaction with CSV support.",  color: "from-amber-500/20 to-transparent",   glow: "#f59e0b", iconColor: "#f59e0b" },
-  { icon: Zap,        title: "Real-time Dashboard",  desc: "Live balance, income, expenses and savings rate at a glance.",      color: "from-rose-500/20 to-transparent",    glow: "#f43f5e", iconColor: "#f43f5e" },
-  { icon: Sparkles,   title: "Dark & Light Mode",    desc: "Seamlessly switch themes. Your preference is saved automatically.", color: "from-cyan-500/20 to-transparent",    glow: "#06b6d4", iconColor: "#06b6d4" },
+  { icon: TrendingUp, title: "Smart Insights", desc: "AI-powered spending analysis with actionable recommendations.", color: "from-emerald-500/20 to-transparent", glow: "#10b981", iconColor: "#10b981" },
+  { icon: BarChart2, title: "Visual Analytics", desc: "Beautiful interactive charts that make your finances effortless.", color: "from-violet-500/20 to-transparent", glow: "#8b5cf6", iconColor: "#8b5cf6" },
+  { icon: Shield, title: "Role-Based Access", desc: "Admin and Viewer roles so you control who sees and edits data.", color: "from-blue-500/20 to-transparent", glow: "#3b82f6", iconColor: "#3b82f6" },
+  { icon: DollarSign, title: "Transaction Tracking", desc: "Log, filter, sort and export every transaction with CSV support.", color: "from-amber-500/20 to-transparent", glow: "#f59e0b", iconColor: "#f59e0b" },
+  { icon: Zap, title: "Real-time Dashboard", desc: "Live balance, income, expenses and savings rate at a glance.", color: "from-rose-500/20 to-transparent", glow: "#f43f5e", iconColor: "#f43f5e" },
+  { icon: Sparkles, title: "Dark & Light Mode", desc: "Seamlessly switch themes. Your preference is saved automatically.", color: "from-cyan-500/20 to-transparent", glow: "#06b6d4", iconColor: "#06b6d4" },
 ];
 
 const stats = [
-  { value: "₹55K+", label: "Assets Tracked",   icon: Wallet    },
-  { value: "45.3%", label: "Savings Rate",      icon: PiggyBank },
-  { value: "20+",   label: "Transactions",      icon: LineChart },
-  { value: "6mo",   label: "Financial History", icon: BarChart2 },
+  { value: "₹55K+", label: "Assets Tracked", icon: Wallet },
+  { value: "45.3%", label: "Savings Rate", icon: PiggyBank },
+  { value: "20+", label: "Transactions", icon: LineChart },
+  { value: "6mo", label: "Financial History", icon: BarChart2 },
 ];
 
 function RevealCard({ children, delay = 0 }: { children: React.ReactNode; delay?: number }) {
@@ -40,8 +40,8 @@ function RevealCard({ children, delay = 0 }: { children: React.ReactNode; delay?
 
 export default function LandingPage() {
   const statsReveal = useScrollReveal();
-  const featTitle   = useScrollReveal();
-  const ctaReveal   = useScrollReveal();
+  const featTitle = useScrollReveal();
+  const ctaReveal = useScrollReveal();
 
   return (
     <div className="min-h-screen bg-[#04040f] text-white overflow-x-hidden" style={{ fontFamily: "var(--font-inter, sans-serif)" }}>
@@ -54,7 +54,7 @@ export default function LandingPage() {
       <nav className="relative z-20 flex items-center justify-between px-6 sm:px-14 py-5 border-b border-white/5 backdrop-blur-md">
         <div className="flex items-center gap-2.5">
           <div className="p-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25"><PiggyBank className="h-5 w-5 text-emerald-400" strokeWidth={1.5} /></div>
-          <span className="font-bold text-sm">FinBro</span>
+          <span className="font-bold text-sm">MunshiJi</span>
           <span className="hidden sm:inline text-xs text-white/30 border border-white/10 rounded-full px-2 py-0.5">Finance Manager</span>
         </div>
         <div className="flex items-center gap-2">
@@ -75,7 +75,7 @@ export default function LandingPage() {
           </span>
         </h1>
         <p className="mt-6 text-sm sm:text-base text-white/40 max-w-lg leading-relaxed animate-[fadeInUp_0.7s_ease_0.25s_forwards] opacity-0">
-          FinBro gives you a beautiful real-time view of your money — track transactions, visualize spending, and grow your savings.
+          MunshiJi gives you a beautiful real-time view of your money — track transactions, visualize spending, and grow your savings.
         </p>
         <div className="flex flex-col sm:flex-row items-center gap-3 mt-10 animate-[fadeInUp_0.7s_ease_0.4s_forwards] opacity-0">
           <Link href="/dashboard" className="group flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-sm px-7 py-3 rounded-xl shadow-xl shadow-emerald-500/30 hover:shadow-emerald-500/50 transition-all hover:scale-105">
@@ -140,8 +140,8 @@ export default function LandingPage() {
       </section>
 
       <footer className="relative z-10 border-t border-white/5 px-6 sm:px-14 py-6 flex items-center justify-between text-white/20 text-xs">
-        <div className="flex items-center gap-2"><PiggyBank className="h-4 w-4" strokeWidth={1.5} /><span>FinBro Finance Manager</span></div>
-        <span>© 2026 FinBro. All rights reserved.</span>
+        <div className="flex items-center gap-2"><PiggyBank className="h-4 w-4" strokeWidth={1.5} /><span>MunshiJi Finance Manager</span></div>
+        <span>© 2026 MunshiJi. All rights reserved.</span>
       </footer>
     </div>
   );

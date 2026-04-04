@@ -62,9 +62,9 @@ export function MunshiChat() {
               <Bot size={18} className="text-primary" />
               <div>
                 <CardTitle className="text-sm font-bold">Munshi AI</CardTitle>
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
-                  <span className="text-[10px] text-muted-foreground font-semibold">Online & Ready</span>
+                  <span className="text-xs text-muted-foreground font-semibold">Online & Ready</span>
                 </div>
               </div>
             </div>
@@ -81,9 +81,9 @@ export function MunshiChat() {
               <div key={i} className={cn("flex w-full", m.role === "user" ? "justify-end" : "justify-start")}>
                 <div 
                   className={cn(
-                    "max-w-[85%] px-3 py-2 rounded-2xl text-xs leading-relaxed",
+                    "max-w-[85%] px-3 py-2 rounded-2xl text-[13px] leading-relaxed",
                     m.role === "user" 
-                      ? "bg-primary text-primary-foreground rounded-tr-none" 
+                      ? "bg-primary text-primary-foreground rounded-tr-none shadow-sm" 
                       : "bg-slate-100 dark:bg-slate-900 text-foreground border border-slate-200 dark:border-slate-800 rounded-tl-none"
                   )}
                 >
@@ -108,7 +108,7 @@ export function MunshiChat() {
             <form onSubmit={handleSubmit} className="flex w-full items-center gap-2">
               <Input 
                 placeholder="Ask Munshi anything..." 
-                className="h-9 text-xs focus-visible:ring-1 border-slate-200 dark:border-slate-800"
+                className="h-9 text-[13px] focus-visible:ring-1 border-slate-200 dark:border-slate-800"
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 disabled={isLoading}

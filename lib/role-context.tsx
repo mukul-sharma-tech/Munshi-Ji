@@ -13,13 +13,13 @@ export function RoleProvider({ children }: { children: ReactNode }) {
   const [role, setRoleState] = useState<Role>("Admin");
 
   useEffect(() => {
-    const stored = localStorage.getItem("finbro_role") as Role | null;
+    const stored = localStorage.getItem("MunshiJi_role") as Role | null;
     if (stored === "Admin" || stored === "Viewer") setRoleState(stored);
   }, []);
 
   function setRole(r: Role) {
     setRoleState(r);
-    localStorage.setItem("finbro_role", r);
+    localStorage.setItem("MunshiJi_role", r);
   }
 
   return <RoleContext.Provider value={{ role, setRole }}>{children}</RoleContext.Provider>;

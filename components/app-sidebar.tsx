@@ -18,10 +18,10 @@ import {
 } from "@/components/ui/sidebar";
 
 const navItems = [
-  { title: "Dashboard",    icon: LayoutDashboard, href: "/dashboard"    },
-  { title: "Transactions", icon: ArrowLeftRight,  href: "/transactions" },
-  { title: "Insights",     icon: Lightbulb,       href: "/insights"     },
-  { title: "CA Munshi",    icon: Mic,             href: "/ca-munshi"    },
+  { title: "Dashboard", icon: LayoutDashboard, href: "/dashboard" },
+  { title: "Transactions", icon: ArrowLeftRight, href: "/transactions" },
+  { title: "Insights", icon: Lightbulb, href: "/insights" },
+  { title: "CA Munshi", icon: Mic, href: "/ca-munshi" },
 ];
 
 const footerItems = [
@@ -43,8 +43,8 @@ export function AppSidebar() {
             <div className="flex items-center gap-2">
               <PiggyBank size={16} strokeWidth={1.5} className="text-primary shrink-0" />
               <div>
-                <p className="text-xs font-semibold text-foreground leading-none">FinBro</p>
-                <p className="text-[10px] text-muted-foreground leading-none mt-0.5">Finance Manager</p>
+                <p className="text-sm font-bold text-foreground leading-none">MunshiJi</p>
+                <p className="text-xs text-muted-foreground leading-none mt-1.5 font-medium">Finance Manager</p>
               </div>
             </div>
           )}
@@ -63,10 +63,10 @@ export function AppSidebar() {
                       asChild
                       tooltip={item.title}
                       isActive={active}
-                      className={`h-8 text-xs rounded-md ${active ? "bg-accent text-foreground font-medium" : "text-muted-foreground hover:text-foreground hover:bg-accent"}`}
+                      className={`h-9 text-sm rounded-md ${active ? "bg-accent text-foreground font-bold" : "text-muted-foreground hover:text-foreground hover:bg-accent"}`}
                     >
                       <Link href={item.href}>
-                        <item.icon size={16} className={active ? "text-primary" : "text-slate-500"} />
+                        <item.icon size={18} className={active ? "text-primary" : "text-slate-500"} />
                         <span>{item.title}</span>
                       </Link>
                     </SidebarMenuButton>
@@ -85,10 +85,10 @@ export function AppSidebar() {
               <SidebarMenuButton
                 asChild
                 tooltip={item.title}
-                className="h-8 text-xs text-muted-foreground hover:text-foreground hover:bg-accent rounded-md"
+                className="h-9 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md"
               >
                 <Link href={item.href}>
-                  <item.icon size={16} className="text-slate-500" />
+                  <item.icon size={18} className="text-slate-500" />
                   <span>{item.title}</span>
                 </Link>
               </SidebarMenuButton>
@@ -99,9 +99,9 @@ export function AppSidebar() {
               <DropdownMenuTrigger asChild>
                 <SidebarMenuButton
                   tooltip="Profile"
-                  className="h-8 text-xs text-muted-foreground hover:text-foreground hover:bg-accent rounded-md"
+                  className="h-9 text-sm text-muted-foreground hover:text-foreground hover:bg-accent rounded-md"
                 >
-                  <UserCircle size={16} className="text-slate-500" />
+                  <UserCircle size={18} className="text-slate-500" />
                   <span>Profile</span>
                 </SidebarMenuButton>
               </DropdownMenuTrigger>

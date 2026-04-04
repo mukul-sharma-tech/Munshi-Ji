@@ -67,6 +67,10 @@ type SortOrder = "asc" | "desc";
 export default function TransactionsPage() {
   const { role } = useRole();
   const isAdmin = role === "Admin";
+  
+  // Local state for transactions to allow mutations (Add/Edit/Delete)
+  const [localTransactions, setLocalTransactions] = useState<Transaction[]>(transactions);
+  
   const [searchTerm, setSearchTerm] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [sortBy, setSortBy] = useState<SortField>("date");
@@ -89,30 +93,15 @@ export default function TransactionsPage() {
   const [dateToFilter, setDateToFilter] = useState<string>("");
   const [amountMinFilter, setAmountMinFilter] = useState<string>("");
   const [amountMaxFilter, setAmountMaxFilter] = useState<string>("");
-  const [showFilters, setShowFilters] = useState(false);
-  const [showColumns, setShowColumns] = useState(false);
 
   type ColKey = "date" | "description" | "category" | "type" | "amount";
   const [visibleCols, setVisibleCols] = useState<Record<ColKey, boolean>>({
     date: true, description: true, category: true, type: true, amount: true,
   });
-  const toggleCol = (col: ColKey) =>
-    setVisibleCols((prev) => ({ ...prev, [col]: !prev[col] }));
-
-  // Handle sorting
-  const handleSort = (field: SortField) => {
-    if (sortBy === field) {
-      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
-    } else {
-      setSortBy(field);
-      setSortOrder("asc");
-    }
-    setCurrentPage(1); // Reset to first page when sorting
-  };
 
   // Filter and sort transactions
   const filteredAndSortedTransactions = useMemo(() => {
-    const filtered = transactions.filter((transaction) => {
+    const filtered = [...localTransactions].filter((transaction) => {
       // Search filter
       const matchesSearch = searchTerm === "" ||
         transaction.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -141,16 +130,14 @@ export default function TransactionsPage() {
       let aValue: string | number | Date = a[sortBy];
       let bValue: string | number | Date = b[sortBy];
 
-      // Special handling for amount (convert to number)
       if (sortBy === "amount") {
         aValue = a.amount;
         bValue = b.amount;
       }
 
-      // Special handling for date (convert to Date object)
       if (sortBy === "date") {
-        aValue = new Date(a.date);
-        bValue = new Date(b.date);
+        aValue = new Date(a.date).getTime();
+        bValue = new Date(b.date).getTime();
       }
 
       if (aValue < bValue) {
@@ -163,13 +150,27 @@ export default function TransactionsPage() {
     });
 
     return filtered;
-  }, [searchTerm, sortBy, sortOrder, typeFilter, categoryFilter, dateFromFilter, dateToFilter, amountMinFilter, amountMaxFilter]);
+  }, [localTransactions, searchTerm, sortBy, sortOrder, typeFilter, categoryFilter, dateFromFilter, dateToFilter, amountMinFilter, amountMaxFilter]);
 
   // Get unique categories for filter dropdown
   const categories = useMemo(() => {
-    const uniqueCategories = Array.from(new Set(transactions.map(t => t.category)));
+    const uniqueCategories = Array.from(new Set(localTransactions.map(t => t.category)));
     return uniqueCategories.sort();
-  }, []);
+  }, [localTransactions]);
+
+  const toggleCol = (col: ColKey) =>
+    setVisibleCols((prev) => ({ ...prev, [col]: !prev[col] }));
+
+  // Handle sorting
+  const handleSort = (field: SortField) => {
+    if (sortBy === field) {
+      setSortOrder(sortOrder === "asc" ? "desc" : "asc");
+    } else {
+      setSortBy(field);
+      setSortOrder("asc");
+    }
+    setCurrentPage(1); // Reset to first page when sorting
+  };
 
   // Clear all filters
   const clearFilters = () => {
@@ -182,6 +183,9 @@ export default function TransactionsPage() {
     setSearchTerm("");
     setCurrentPage(1);
   };
+
+  const [showFilters, setShowFilters] = useState(false);
+  const [showColumns, setShowColumns] = useState(false);
 
   // Check if any filters are active
   const hasActiveFilters = searchTerm !== "" || typeFilter !== "all" || categoryFilter !== "all" ||
@@ -222,19 +226,46 @@ export default function TransactionsPage() {
 
   // Handle add transaction
   const handleAddTransaction = () => {
-    // In a real app, this would make an API call
-    console.log("Adding transaction:", formData);
+    const newTransaction: Transaction = {
+      id: Math.random().toString(36).substr(2, 9),
+      date: formData.date || new Date().toISOString().split("T")[0],
+      description: formData.description,
+      category: formData.category,
+      type: formData.type,
+      amount: parseFloat(formData.amount) || 0,
+    };
+    
+    setLocalTransactions((prev) => [newTransaction, ...prev]);
     setIsAddDialogOpen(false);
     resetForm();
   };
 
   // Handle edit transaction
   const handleEditTransaction = () => {
-    // In a real app, this would make an API call
-    console.log("Editing transaction:", editingTransaction?.id, formData);
+    if (!editingTransaction) return;
+    
+    setLocalTransactions((prev) => 
+      prev.map((t) => 
+        t.id === editingTransaction.id 
+          ? { 
+              ...t, 
+              date: formData.date, 
+              description: formData.description, 
+              category: formData.category, 
+              type: formData.type, 
+              amount: parseFloat(formData.amount) || 0 
+            } 
+          : t
+      )
+    );
     setIsEditDialogOpen(false);
     setEditingTransaction(null);
     resetForm();
+  };
+
+  // Handle delete transaction
+  const handleDeleteTransaction = (id: string) => {
+    setLocalTransactions((prev) => prev.filter((t) => t.id !== id));
   };
 
   // Open edit dialog
@@ -498,7 +529,10 @@ export default function TransactionsPage() {
                         <DropdownMenuItem onClick={() => openEditDialog(transaction)} className="text-xs gap-2">
                           <EditIcon size={14} className="text-slate-500" />Edit Record
                         </DropdownMenuItem>
-                        <DropdownMenuItem className="text-xs text-rose-600 focus:text-rose-600 gap-2">
+                        <DropdownMenuItem 
+                          onClick={() => handleDeleteTransaction(transaction.id)} 
+                          className="text-xs text-rose-600 focus:text-rose-600 gap-2 cursor-pointer"
+                        >
                           <XIcon size={14} />Delete Record
                         </DropdownMenuItem>
                       </DropdownMenuContent>

@@ -15,12 +15,12 @@ export async function POST(req: Request) {
 
     const groq = new Groq({ apiKey });
 
-    const systemPrompt = isVoice 
+    const systemPrompt = isVoice
       ? `You are 'Munshi', a wise financial assistant in a voice call. 
          BE EXTREMELY CONCISE. One or two short sentences only. 
          Speak naturally for a conversation. Avoid lists or long explanations. 
          Focus on the most important fact.`
-      : `You are 'Munshi', a wise and professional financial assistant for FinBro. 
+      : `You are 'Munshi', a wise and professional financial assistant for MunshiJi. 
          Your goal is to help users understand their personal finance dashboard. 
          Keep your responses concise, utilitarian, and data-driven. 
          Use terms like 'Balance', 'Expense', and 'Income' as they appear in the UI. 

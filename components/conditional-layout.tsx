@@ -23,7 +23,7 @@ export function ConditionalLayout({ children }: { children: React.ReactNode }) {
           <div className="flex items-center gap-2">
             <SidebarTrigger className="h-7 w-7 text-slate-500 hover:text-foreground hover:bg-accent transition-colors" />
             <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-              <span>FinBro</span>
+              <span>MunshiJi</span>
               <span>/</span>
               <span className="text-foreground font-medium">{label}</span>
             </div>

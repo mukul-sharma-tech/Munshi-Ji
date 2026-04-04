@@ -33,11 +33,11 @@ export default function DashboardPage() {
   return (
     <div className="p-4 lg:p-8 space-y-8 max-w-7xl mx-auto">
       {/* Page header */}
-      <div className="flex flex-col gap-1">
-        <h1 className="text-xl font-semibold tracking-tight text-foreground">Dashboard</h1>
-        <div className="flex items-center gap-2 text-xs text-muted-foreground font-medium">
+      <div className="flex flex-col gap-1.5">
+        <h1 className="text-2xl font-bold tracking-tight text-foreground">Dashboard</h1>
+        <div className="flex items-center gap-2.5 text-sm text-muted-foreground font-medium">
           <span>April 2026</span>
-          <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-slate-700" />
+          <span className="w-1.5 h-1.5 rounded-full bg-slate-300 dark:bg-slate-700" />
           <span>Mukul Sharma</span>
         </div>
       </div>
@@ -46,18 +46,18 @@ export default function DashboardPage() {
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((s) => (
           <Card key={s.label} className="shadow-none border-border/80">
-            <CardHeader className="flex flex-row items-center justify-between space-y-0 py-3">
-              <CardTitle className="text-xs font-medium text-muted-foreground uppercase tracking-wider">{s.label}</CardTitle>
-              <s.icon size={16} className="text-slate-400" />
+            <CardHeader className="flex flex-row items-center justify-between space-y-0 py-4">
+              <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-widest">{s.label}</CardTitle>
+              <s.icon size={18} className="text-slate-400" />
             </CardHeader>
             <CardContent className="pb-4">
-              <div className="text-2xl font-bold tracking-tight">{s.value}</div>
-              <div className="flex items-center gap-1.5 mt-1.5">
-                <span className={`flex items-center gap-0.5 text-xs font-semibold ${s.trend === "up" ? "text-emerald-600" : "text-rose-600"}`}>
-                  {s.trend === "up" ? <TrendingUp size={12} strokeWidth={2.5} /> : <TrendingDown size={12} strokeWidth={2.5} />}
+              <div className="text-3xl font-bold tracking-tight">{s.value}</div>
+              <div className="flex items-center gap-2 mt-2">
+                <span className={`flex items-center gap-0.5 text-sm font-bold ${s.trend === "up" ? "text-emerald-600" : "text-rose-600"}`}>
+                  {s.trend === "up" ? <TrendingUp size={14} strokeWidth={2.5} /> : <TrendingDown size={14} strokeWidth={2.5} />}
                   {s.change}
                 </span>
-                <span className="text-[11px] text-muted-foreground font-medium">{s.sub}</span>
+                <span className="text-sm text-muted-foreground font-medium">{s.sub}</span>
               </div>
             </CardContent>
           </Card>
@@ -99,14 +99,14 @@ export default function DashboardPage() {
                   <div key={ins.title} className="group">
                     <div className="flex items-center justify-between mb-1.5">
                       <div className="flex items-center gap-2">
-                        <ins.icon size={14} className="text-slate-500" />
-                        <span className="text-xs font-semibold text-foreground/80">{ins.title}</span>
+                        <ins.icon size={16} className="text-slate-500" />
+                        <span className="text-sm font-bold text-foreground/80">{ins.title}</span>
                       </div>
-                      <span className={`text-[10px] font-bold px-2 py-0.5 rounded-full border border-current/20 ${ins.badgeCls}`}>{ins.badge}</span>
+                      <span className={`text-xs font-bold px-2.5 py-1 rounded-full border border-current/20 ${ins.badgeCls}`}>{ins.badge}</span>
                     </div>
-                    <div className="flex items-baseline justify-between mb-2">
-                      <span className={`text-base font-bold tabular-nums ${ins.valueCls}`}>{ins.value}</span>
-                      <span className="text-[10px] text-muted-foreground font-medium">{ins.note}</span>
+                    <div className="flex items-baseline justify-between mb-2.5">
+                      <span className={`text-lg font-bold tabular-nums ${ins.valueCls}`}>{ins.value}</span>
+                      <span className="text-sm text-muted-foreground font-medium">{ins.note}</span>
                     </div>
                     <div className="h-1 w-full rounded-full bg-slate-100 dark:bg-slate-800 overflow-hidden">
                       <div className={`h-full ${ins.bar} rounded-full transition-all duration-500`} style={{ width: ins.barW }} />
@@ -170,8 +170,8 @@ export default function DashboardPage() {
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4 pb-5">
-              <div className="space-y-2">
-                <div className="flex items-center justify-between text-xs font-medium">
+              <div className="space-y-2.5">
+                <div className="flex items-center justify-between text-sm font-bold">
                   <span className="text-muted-foreground">Monthly Spending Limit</span>
                   <span className="text-foreground">₹42,300 / ₹65,000</span>
                 </div>
@@ -188,19 +188,19 @@ export default function DashboardPage() {
                     </div>
                     <div>
                       <p className="text-xs font-bold">Auto-Savings Active</p>
-                      <p className="text-[10px] text-muted-foreground">₹2.5k saved this month</p>
+                      <p className="text-xs text-muted-foreground">₹2.5k saved this month</p>
                     </div>
                   </div>
-                  <Button variant="ghost" size="xs" className="h-7 text-[10px] font-bold">Manage</Button>
+                  <Button variant="ghost" size="xs" className="h-7 text-xs font-bold px-2">Manage</Button>
                 </div>
               </div>
 
               <div className="grid grid-cols-2 gap-2 pt-1">
-                <Button variant="outline" size="sm" className="h-8 text-[10px] font-bold gap-2">
+                <Button variant="outline" size="sm" className="h-8 text-xs font-bold gap-2">
                   <AlertTriangle size={12} className="text-amber-500" />
                   Audit Log
                 </Button>
-                <Button variant="outline" size="sm" className="h-8 text-[10px] font-bold gap-2">
+                <Button variant="outline" size="sm" className="h-8 text-xs font-bold gap-2">
                   <BarChart2 size={12} className="text-blue-500" />
                   Limits
                 </Button>

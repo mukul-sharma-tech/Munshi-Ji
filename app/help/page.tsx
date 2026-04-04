@@ -8,12 +8,12 @@ import {
 } from "lucide-react";
 
 const categories = [
-  { icon: BookOpen,    label: "Getting Started",   count: 8,  color: "bg-blue-500/10 text-blue-500"    },
-  { icon: CreditCard, label: "Transactions",        count: 12, color: "bg-emerald-500/10 text-emerald-500" },
-  { icon: BarChart2,  label: "Insights & Reports",  count: 6,  color: "bg-violet-500/10 text-violet-500" },
-  { icon: Shield,     label: "Security & Privacy",  count: 9,  color: "bg-rose-500/10 text-rose-500"    },
-  { icon: Zap,        label: "Billing & Plans",     count: 7,  color: "bg-amber-500/10 text-amber-500"  },
-  { icon: FileText,   label: "Account Settings",    count: 5,  color: "bg-cyan-500/10 text-cyan-500"    },
+  { icon: BookOpen, label: "Getting Started", count: 8, color: "bg-blue-500/10 text-blue-500" },
+  { icon: CreditCard, label: "Transactions", count: 12, color: "bg-emerald-500/10 text-emerald-500" },
+  { icon: BarChart2, label: "Insights & Reports", count: 6, color: "bg-violet-500/10 text-violet-500" },
+  { icon: Shield, label: "Security & Privacy", count: 9, color: "bg-rose-500/10 text-rose-500" },
+  { icon: Zap, label: "Billing & Plans", count: 7, color: "bg-amber-500/10 text-amber-500" },
+  { icon: FileText, label: "Account Settings", count: 5, color: "bg-cyan-500/10 text-cyan-500" },
 ];
 
 const faqs = [
@@ -50,12 +50,12 @@ const faqs = [
 ];
 
 const articles = [
-  { title: "Getting started with FinBro",         views: "2.4k", tag: "Guide"   },
-  { title: "Understanding your spending insights", views: "1.8k", tag: "Insights"},
-  { title: "Setting up categories",               views: "1.2k", tag: "Tips"    },
-  { title: "How to read the balance trend chart", views: "980",  tag: "Charts"  },
-  { title: "Managing multiple accounts",          views: "760",  tag: "Guide"   },
-  { title: "Securing your account",               views: "640",  tag: "Security"},
+  { title: "Getting started with MunshiJi", views: "2.4k", tag: "Guide" },
+  { title: "Understanding your spending insights", views: "1.8k", tag: "Insights" },
+  { title: "Setting up categories", views: "1.2k", tag: "Tips" },
+  { title: "How to read the balance trend chart", views: "980", tag: "Charts" },
+  { title: "Managing multiple accounts", views: "760", tag: "Guide" },
+  { title: "Securing your account", views: "640", tag: "Security" },
 ];
 
 export default function HelpPage() {
@@ -64,7 +64,7 @@ export default function HelpPage() {
       {/* Header */}
       <div className="rounded-xl bg-gradient-to-br from-primary/10 to-primary/5 border border-primary/10 p-6 space-y-3">
         <h1 className="text-2xl font-semibold tracking-tight">Help Center</h1>
-        <p className="text-sm text-muted-foreground">Find answers, guides, and support for FinBro Finance Manager.</p>
+        <p className="text-sm text-muted-foreground">Find answers, guides, and support for MunshiJi Finance Manager.</p>
         <div className="relative max-w-md">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground" />
           <Input placeholder="Search for help..." className="pl-9 bg-background" />
