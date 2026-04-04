@@ -36,10 +36,10 @@ import {
 } from "@/components/ui/sidebar";
 
 const navItems = [
-  { title: "Dashboard",    icon: LayoutDashboard, href: "/"             },
+  { title: "Dashboard",    icon: LayoutDashboard, href: "/dashboard"    },
   { title: "Transactions", icon: ArrowLeftRight,  href: "/transactions" },
   { title: "Insights",     icon: Lightbulb,       href: "/insights"     },
-  // { title: "Settings",     icon: Settings,        href: "/settings"     },
+  { title: "Settings",     icon: Settings,        href: "/settings"     },
 ];
 
 const footerItems = [

@@ -5,27 +5,27 @@ import { Separator } from "@/components/ui/separator";
 import { CreditCard, Download, CheckCircle2, Zap, Shield, Star } from "lucide-react";
 
 const invoices = [
-  { id: "INV-2024-006", date: "Jun 1, 2024", amount: "$12.00", status: "Paid" },
-  { id: "INV-2024-005", date: "May 1, 2024", amount: "$12.00", status: "Paid" },
-  { id: "INV-2024-004", date: "Apr 1, 2024", amount: "$12.00", status: "Paid" },
-  { id: "INV-2024-003", date: "Mar 1, 2024", amount: "$12.00", status: "Paid" },
-  { id: "INV-2024-002", date: "Feb 1, 2024", amount: "$12.00", status: "Paid" },
-  { id: "INV-2024-001", date: "Jan 1, 2024", amount: "$9.00",  status: "Paid" },
+  { id: "INV-2026-006", date: "Jun 1, 2026", amount: "₹12.00", status: "Paid" },
+  { id: "INV-2026-005", date: "May 1, 2026", amount: "₹12.00", status: "Paid" },
+  { id: "INV-2026-004", date: "Apr 1, 2026", amount: "₹12.00", status: "Paid" },
+  { id: "INV-2026-003", date: "Mar 1, 2026", amount: "₹12.00", status: "Paid" },
+  { id: "INV-2026-002", date: "Feb 1, 2026", amount: "₹12.00", status: "Paid" },
+  { id: "INV-2026-001", date: "Jan 1, 2026", amount: "₹9.00",  status: "Paid" },
 ];
 
 const plans = [
   {
-    name: "Free", price: "$0", desc: "For personal use",
+    name: "Free", price: "₹0", desc: "For personal use",
     features: ["Up to 50 transactions/mo", "Basic insights", "CSV export"],
     current: false, icon: Shield,
   },
   {
-    name: "Pro", price: "$12", desc: "Per month",
+    name: "Pro", price: "₹12", desc: "Per month",
     features: ["Unlimited transactions", "Advanced insights", "Priority support", "Custom categories"],
     current: true, icon: Zap,
   },
   {
-    name: "Business", price: "$29", desc: "Per month",
+    name: "Business", price: "₹29", desc: "Per month",
     features: ["Everything in Pro", "Multi-user access", "API access", "Dedicated support"],
     current: false, icon: Star,
   },
@@ -55,7 +55,7 @@ export default function BillingPage() {
                 </div>
                 <div>
                   <p className="font-semibold">Pro Plan</p>
-                  <p className="text-xs text-muted-foreground">Renews Jul 1, 2024 · $12.00/mo</p>
+                  <p className="text-xs text-muted-foreground">Renews Jul 1, 2026 · ₹12.00/mo</p>
                 </div>
               </div>
               <Badge className="bg-emerald-500/10 text-emerald-600 border-0">Active</Badge>

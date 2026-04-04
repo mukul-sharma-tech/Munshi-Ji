@@ -33,13 +33,13 @@ export function BalanceTrendChart() {
               tickLine={false}
               axisLine={false}
               tickMargin={8}
-              tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`}
+              tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`}
             />
             <ChartTooltip
               content={
                 <ChartTooltipContent
                   labelFormatter={(v) => v}
-                  formatter={(value) => [`$${Number(value).toLocaleString()}`, "Balance"]}
+                  formatter={(value) => [`₹${Number(value).toLocaleString()}`, "Balance"]}
                 />
               }
             />

@@ -32,7 +32,7 @@ function CustomTooltip({ active, payload }: { active?: boolean; payload?: { valu
       style={{ backgroundColor: fill }}
       className="rounded-md px-3 py-1.5 text-sm font-semibold text-white shadow-md"
     >
-      ${Number(value).toLocaleString()} {label}
+      ₹{Number(value).toLocaleString()} {label}
     </div>
   );
 }

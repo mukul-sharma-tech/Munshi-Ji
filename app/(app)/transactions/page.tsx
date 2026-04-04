@@ -492,7 +492,7 @@ export default function TransactionsPage() {
       </div>
 
       {/* Transactions Table */}
-      <div className="rounded-md border">
+      <div className="rounded-2xl border border-border/60 overflow-hidden shadow-sm">
         <Table>
           <TableHeader>
             <TableRow>
@@ -506,7 +506,7 @@ export default function TransactionsPage() {
           </TableHeader>
           <TableBody>
             {paginatedTransactions.map((transaction) => (
-              <TableRow key={transaction.id}>
+              <TableRow key={transaction.id} className="hover:bg-accent/30 transition-colors group">
                 {visibleCols.date && <TableCell>{transaction.date}</TableCell>}
                 {visibleCols.description && <TableCell>{transaction.description}</TableCell>}
                 {visibleCols.category && <TableCell>{transaction.category}</TableCell>}
@@ -519,9 +519,9 @@ export default function TransactionsPage() {
                   <TableCell className="text-right font-medium">
                     <div className="flex items-center justify-end gap-1">
                       {transaction.type === "credit" ? (
-                        <><ArrowUpIcon className="h-4 w-4 text-green-500" /><span className="text-green-600">+${transaction.amount.toFixed(2)}</span></>
+                        <><ArrowUpIcon className="h-4 w-4 text-emerald-500" /><span className="font-bold text-emerald-500">+₹{transaction.amount.toFixed(2)}</span></>
                       ) : (
-                        <><ArrowDownIcon className="h-4 w-4 text-red-500" /><span className="text-red-600">-${transaction.amount.toFixed(2)}</span></>
+                        <><ArrowDownIcon className="h-4 w-4 text-rose-500" /><span className="font-bold text-rose-500">−₹{transaction.amount.toFixed(2)}</span></>
                       )}
                     </div>
                   </TableCell>

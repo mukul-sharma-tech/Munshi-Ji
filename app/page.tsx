@@ -1,192 +1,209 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useRef, useState } from "react";
 import {
-  TrendingUp, TrendingDown, DollarSign, ArrowDownLeft, ArrowUpRight, PiggyBank,
-  Home, AlertTriangle, BarChart2, Heart,
+  PiggyBank, TrendingUp, BarChart2, Shield, ArrowRight,
+  Sparkles, DollarSign, Zap, ChevronDown, Wallet, LineChart,
 } from "lucide-react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { BalanceTrendChart } from "@/components/balance-trend-chart";
-import { SpendingBreakdownChart } from "@/components/spending-breakdown-chart";
-import { transactions } from "@/lib/data";
+
+const features = [
+  { icon: TrendingUp,  title: "Smart Insights",       desc: "AI-powered spending analysis with actionable recommendations.",          color: "from-emerald-500/20 to-transparent", glow: "#10b981", iconColor: "#10b981" },
+  { icon: BarChart2,   title: "Visual Analytics",      desc: "Beautiful interactive charts that make your finances effortless.",        color: "from-violet-500/20 to-transparent",  glow: "#8b5cf6", iconColor: "#8b5cf6" },
+  { icon: Shield,      title: "Role-Based Access",     desc: "Admin and Viewer roles so you control who sees and edits your data.",     color: "from-blue-500/20 to-transparent",    glow: "#3b82f6", iconColor: "#3b82f6" },
+  { icon: DollarSign,  title: "Transaction Tracking",  desc: "Log, filter, sort and export every transaction with CSV support.",        color: "from-amber-500/20 to-transparent",   glow: "#f59e0b", iconColor: "#f59e0b" },
+  { icon: Zap,         title: "Real-time Dashboard",   desc: "Live balance, income, expenses and savings rate at a glance.",            color: "from-rose-500/20 to-transparent",    glow: "#f43f5e", iconColor: "#f43f5e" },
+  { icon: Sparkles,    title: "Dark & Light Mode",     desc: "Seamlessly switch themes. Your preference is saved automatically.",       color: "from-cyan-500/20 to-transparent",    glow: "#06b6d4", iconColor: "#06b6d4" },
+];
 
 const stats = [
-  {
-    label: "Total Balance",
-    value: "$55,083.93",
-    change: "+2.5%",
-    trend: "up",
-    sub: "from last month",
-    icon: DollarSign,
-    color: "text-blue-500",
-    bg: "bg-blue-500/10",
-  },
-  {
-    label: "Total Income",
-    value: "$13,220.00",
-    change: "+8.1%",
-    trend: "up",
-    sub: "from last month",
-    icon: ArrowUpRight,
-    color: "text-emerald-500",
-    bg: "bg-emerald-500/10",
-  },
-  {
-    label: "Total Expenses",
-    value: "$7,236.15",
-    change: "-98.3%",
-    trend: "down",
-    sub: "vs $9,152.71 last month",
-    icon: ArrowDownLeft,
-    color: "text-rose-500",
-    bg: "bg-rose-500/10",
-  },
-  {
-    label: "Savings Rate",
-    value: "45.3%",
-    change: "+3.2%",
-    trend: "up",
-    sub: "from last month",
-    icon: PiggyBank,
-    color: "text-violet-500",
-    bg: "bg-violet-500/10",
-  },
+  { value: "$55K+", label: "Assets Tracked",   icon: Wallet    },
+  { value: "45.3%", label: "Savings Rate",      icon: PiggyBank },
+  { value: "20+",   label: "Transactions",      icon: LineChart },
+  { value: "6mo",   label: "Financial History", icon: BarChart2 },
 ];
 
-const insights = [
-  {
-    icon: Home,
-    iconColor: "text-rose-500",
-    iconBg: "bg-rose-500/10",
-    title: "Highest Spending",
-    badge: "Your top expense is Housing.",
-    badgeVariant: "destructive" as const,
-    value: "$26,324.26",
-    note: "Focus on reducing this to save more.",
-  },
-  {
-    icon: BarChart2,
-    iconColor: "text-amber-500",
-    iconBg: "bg-amber-500/10",
-    title: "Monthly Comparison",
-    badge: "Falling",
-    badgeVariant: "secondary" as const,
-    value: "Expenses decreased by 98.3%",
-    note: "vs. $9,152.71 last month.",
-  },
-  {
-    icon: Heart,
-    iconColor: "text-emerald-500",
-    iconBg: "bg-emerald-500/10",
-    title: "Savings Health",
-    badge: "HEALTHY",
-    badgeVariant: "outline" as const,
-    value: "Your current savings rate is 45.3%",
-    note: "Great job! Keep it up.",
-  },
-];
+function useInView() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [inView, setInView] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(([e]) => { if (e.isIntersecting) setInView(true); }, { threshold: 0.1 });
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, []);
+  return { ref, inView };
+}
 
-const recent = transactions.slice(0, 6);
+export default function LandingPage() {
+  const featRef = useInView();
+  const statsRef = useInView();
+  const ctaRef = useInView();
 
-export default function DashboardPage() {
   return (
-    <div className="p-4 sm:p-6 space-y-6">
-      {/* Welcome */}
-      <div>
-        <h1 className="text-2xl font-semibold tracking-tight">Welcome back, Mukul Sharma</h1>
-        <p className="text-sm text-muted-foreground mt-1">Here&apos;s your financial overview for June 2024.</p>
+    <div className="min-h-screen bg-[#04040f] text-white overflow-x-hidden font-[var(--font-inter)]">
+
+      {/* ── Ambient blobs ── */}
+      <div className="fixed inset-0 pointer-events-none">
+        <div className="absolute -top-32 -left-32 w-[700px] h-[700px] rounded-full bg-violet-600/10 blur-[140px]" style={{ animation: "pulse 6s ease-in-out infinite" }} />
+        <div className="absolute top-1/2 -right-48 w-[500px] h-[500px] rounded-full bg-emerald-500/8 blur-[120px]" style={{ animation: "pulse 8s ease-in-out infinite 2s" }} />
+        <div className="absolute bottom-0 left-1/4 w-[400px] h-[400px] rounded-full bg-blue-500/8 blur-[100px]" style={{ animation: "pulse 7s ease-in-out infinite 1s" }} />
       </div>
 
-      {/* Stats */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-4">
-        {stats.map((s) => (
-          <Card key={s.label}>
-            <CardHeader className="flex flex-row items-center justify-between pb-2">
-              <CardTitle className="text-sm font-medium text-muted-foreground">{s.label}</CardTitle>
-              <div className={`p-2 rounded-lg ${s.bg}`}>
-                <s.icon className={`h-4 w-4 ${s.color}`} />
-              </div>
-            </CardHeader>
-            <CardContent>
-              <div className="text-2xl font-bold">{s.value}</div>
-              <div className="flex items-center gap-1 mt-1">
-                {s.trend === "up" ? (
-                  <TrendingUp className="h-3.5 w-3.5 text-emerald-500" />
-                ) : (
-                  <TrendingDown className="h-3.5 w-3.5 text-rose-500" />
-                )}
-                <span className={`text-xs font-medium ${s.trend === "up" ? "text-emerald-500" : "text-rose-500"}`}>
-                  {s.change}
-                </span>
-                <span className="text-xs text-muted-foreground">{s.sub}</span>
-              </div>
-            </CardContent>
-          </Card>
+      {/* ── Nav ── */}
+      <nav className="relative z-20 flex items-center justify-between px-6 sm:px-14 py-5 border-b border-white/5 backdrop-blur-md">
+        <div className="flex items-center gap-2.5">
+          <div className="p-1.5 rounded-xl bg-emerald-500/10 border border-emerald-500/25 shadow-lg shadow-emerald-500/10">
+            <PiggyBank className="h-5 w-5 text-emerald-400" strokeWidth={1.5} />
+          </div>
+          <span className="font-bold text-sm tracking-wide">FinBro</span>
+          <span className="hidden sm:inline text-xs text-white/30 border border-white/10 rounded-full px-2 py-0.5">Finance Manager</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <Link href="/dashboard" className="text-xs text-white/50 hover:text-white transition-colors px-3 py-1.5 rounded-lg hover:bg-white/5">
+            Sign In
+          </Link>
+          <Link
+            href="/dashboard"
+            className="text-xs font-semibold bg-emerald-500 hover:bg-emerald-400 text-black px-4 py-1.5 rounded-lg shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 transition-all hover:scale-105"
+          >
+            Get Started
+          </Link>
+        </div>
+      </nav>
+
+      {/* ── Hero ── */}
+      <section className="relative z-10 flex flex-col items-center text-center px-6 pt-24 pb-16 sm:pt-36 sm:pb-24">
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/8 text-emerald-400 text-xs font-medium mb-8">
+          <Sparkles className="h-3 w-3" />
+          Smart Personal Finance
+        </div>
+
+        <h1 className="text-4xl sm:text-6xl lg:text-7xl font-extrabold tracking-tight leading-[1.1] max-w-4xl">
+          Take control of your
+          <br />
+          <span className="relative inline-block mt-1">
+            <span className="bg-gradient-to-r from-emerald-400 via-cyan-300 to-violet-400 bg-clip-text text-transparent">
+              financial future
+            </span>
+            <span className="absolute -inset-2 bg-gradient-to-r from-emerald-400/15 via-cyan-300/15 to-violet-400/15 blur-2xl rounded-full -z-10" />
+          </span>
+        </h1>
+
+        <p className="mt-6 text-sm sm:text-base text-white/40 max-w-lg leading-relaxed">
+          FinBro gives you a beautiful real-time view of your money — track transactions, visualize spending patterns, and grow your savings effortlessly.
+        </p>
+
+        <div className="flex flex-col sm:flex-row items-center gap-3 mt-10">
+          <Link
+            href="/dashboard"
+            className="group flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-sm px-7 py-3 rounded-xl shadow-xl shadow-emerald-500/30 hover:shadow-emerald-500/50 transition-all hover:scale-105"
+          >
+            View Your Savings
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+          </Link>
+          <Link
+            href="/dashboard"
+            className="flex items-center gap-2 text-sm text-white/60 hover:text-white border border-white/10 hover:border-white/25 bg-white/3 hover:bg-white/8 px-7 py-3 rounded-xl backdrop-blur-sm transition-all hover:scale-105"
+          >
+            Explore Dashboard
+          </Link>
+        </div>
+
+        <div className="mt-16 flex flex-col items-center gap-1 text-white/20 animate-bounce">
+          <span className="text-xs">Scroll to explore</span>
+          <ChevronDown className="h-4 w-4" />
+        </div>
+      </section>
+
+      {/* ── Stats ── */}
+      <div
+        ref={statsRef.ref}
+        className={`relative z-10 mx-4 sm:mx-14 rounded-2xl border border-white/8 bg-white/3 backdrop-blur-sm p-6 grid grid-cols-2 sm:grid-cols-4 gap-6 transition-all duration-700 ${statsRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
+      >
+        {stats.map((s, i) => (
+          <div
+            key={s.label}
+            className="flex flex-col items-center gap-2 transition-all duration-500"
+            style={{ transitionDelay: `${i * 100}ms` }}
+          >
+            <div className="p-2 rounded-lg bg-white/5 border border-white/8">
+              <s.icon className="h-4 w-4 text-emerald-400" />
+            </div>
+            <span className="text-2xl sm:text-3xl font-extrabold bg-gradient-to-r from-emerald-400 to-cyan-400 bg-clip-text text-transparent">{s.value}</span>
+            <span className="text-xs text-white/35 text-center">{s.label}</span>
+          </div>
         ))}
       </div>
 
-      {/* Recent Insights */}
-      <div>
-        <h2 className="text-base font-semibold mb-3">Recent Insights</h2>
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          {insights.map((ins) => (
-            <Card key={ins.title}>
-              <CardHeader className="flex flex-row items-center gap-3 pb-2">
-                <div className={`p-2 rounded-lg ${ins.iconBg}`}>
-                  <ins.icon className={`h-4 w-4 ${ins.iconColor}`} />
-                </div>
-                <CardTitle className="text-sm font-medium">{ins.title}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-1">
-                <Badge variant={ins.badgeVariant} className="text-xs">{ins.badge}</Badge>
-                <p className="text-base font-semibold">{ins.value}</p>
-                <p className="text-xs text-muted-foreground">&quot;{ins.note}&quot;</p>
-              </CardContent>
-            </Card>
+      {/* ── Features ── */}
+      <section ref={featRef.ref} className="relative z-10 px-4 sm:px-14 py-24">
+        <div className={`text-center mb-12 transition-all duration-700 ${featRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}>
+          <h2 className="text-3xl sm:text-4xl font-bold">Everything you need</h2>
+          <p className="mt-3 text-white/35 text-sm max-w-sm mx-auto">A complete toolkit for personal finance, beautifully designed.</p>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+          {features.map((f, i) => (
+            <div
+              key={f.title}
+              className={`group relative rounded-2xl border border-white/6 bg-gradient-to-br ${f.color} p-6 cursor-default transition-all duration-500 hover:border-white/15 hover:scale-[1.02] ${featRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
+              style={{
+                transitionDelay: `${i * 80}ms`,
+                boxShadow: `0 0 0 0 ${f.glow}00`,
+              }}
+              onMouseEnter={(e) => { (e.currentTarget as HTMLDivElement).style.boxShadow = `0 8px 40px -8px ${f.glow}40`; }}
+              onMouseLeave={(e) => { (e.currentTarget as HTMLDivElement).style.boxShadow = "none"; }}
+            >
+              <div className="absolute top-3 right-3 h-1.5 w-1.5 rounded-full bg-white/15 group-hover:bg-white/40 transition-colors" />
+              <div className="inline-flex p-2.5 rounded-xl bg-white/5 border border-white/8 mb-4 group-hover:border-white/20 transition-colors">
+                <f.icon className="h-5 w-5" style={{ color: f.iconColor }} />
+              </div>
+              <h3 className="font-semibold text-sm mb-1.5 text-white/90">{f.title}</h3>
+              <p className="text-xs text-white/35 leading-relaxed">{f.desc}</p>
+            </div>
           ))}
         </div>
-      </div>
+      </section>
 
-      {/* Charts */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-        <BalanceTrendChart />
-        <SpendingBreakdownChart />
-      </div>
+      {/* ── CTA ── */}
+      <section
+        ref={ctaRef.ref}
+        className={`relative z-10 px-4 sm:px-14 pb-24 transition-all duration-700 ${ctaRef.inView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"}`}
+      >
+        <div className="relative rounded-3xl border border-emerald-500/20 overflow-hidden p-10 sm:p-16 text-center"
+          style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(16,185,129,0.12) 0%, rgba(4,4,15,0.8) 70%)" }}
+        >
+          <div className="absolute -top-24 left-1/2 -translate-x-1/2 w-72 h-72 bg-emerald-500/15 rounded-full blur-3xl pointer-events-none" />
+          <div className="absolute inset-0 border border-emerald-500/10 rounded-3xl pointer-events-none" />
 
-      {/* Recent Transactions */}
-      <div>
-        <div className="flex items-center justify-between mb-3">
-          <h2 className="text-base font-semibold">Recent Transactions</h2>
-          <Button variant="outline" size="sm" asChild>
-            <Link href="/transactions">Show All</Link>
-          </Button>
-        </div>
-        <Card>
-          <CardContent className="p-0">
-            <div className="divide-y divide-border">
-              {recent.map((tx) => (
-                <div key={tx.id} className="flex items-center justify-between px-4 py-3">
-                  <div className="flex items-center gap-3">
-                    <div className={`p-1.5 rounded-full ${tx.type === "credit" ? "bg-emerald-500/10" : "bg-rose-500/10"}`}>
-                      {tx.type === "credit"
-                        ? <TrendingUp className="h-3.5 w-3.5 text-emerald-500" />
-                        : <TrendingDown className="h-3.5 w-3.5 text-rose-500" />}
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium">{tx.description}</p>
-                      <p className="text-xs text-muted-foreground">{tx.date} · {tx.category}</p>
-                    </div>
-                  </div>
-                  <span className={`text-sm font-semibold ${tx.type === "credit" ? "text-emerald-500" : "text-rose-500"}`}>
-                    {tx.type === "credit" ? "+" : "-"}${tx.amount.toFixed(2)}
-                  </span>
-                </div>
-              ))}
+          <div className="relative">
+            <div className="inline-flex p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/25 mb-6 shadow-xl shadow-emerald-500/10">
+              <PiggyBank className="h-8 w-8 text-emerald-400" strokeWidth={1.5} />
             </div>
-          </CardContent>
-        </Card>
-      </div>
+            <h2 className="text-3xl sm:text-4xl font-extrabold mb-4">Ready to grow your savings?</h2>
+            <p className="text-white/35 text-sm max-w-md mx-auto mb-8">
+              Jump into your personal finance dashboard and start tracking what matters most.
+            </p>
+            <Link
+              href="/dashboard"
+              className="group inline-flex items-center gap-2 bg-emerald-500 hover:bg-emerald-400 text-black font-bold text-sm px-10 py-3.5 rounded-xl shadow-xl shadow-emerald-500/30 hover:shadow-emerald-500/50 transition-all hover:scale-105"
+            >
+              Go to Your Savings
+              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+            </Link>
+          </div>
+        </div>
+      </section>
+
+      {/* ── Footer ── */}
+      <footer className="relative z-10 border-t border-white/5 px-6 sm:px-14 py-6 flex items-center justify-between text-white/20 text-xs">
+        <div className="flex items-center gap-2">
+          <PiggyBank className="h-4 w-4" strokeWidth={1.5} />
+          <span>FinBro Finance Manager</span>
+        </div>
+        <span>© 2026 FinBro. All rights reserved.</span>
+      </footer>
     </div>
   );
 }

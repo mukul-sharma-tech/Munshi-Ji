@@ -36,9 +36,9 @@ export function InsightsCharts({ monthlyData, categoryData }: InsightsChartsProp
             <BarChart data={monthlyData} barGap={4}>
               <CartesianGrid strokeDasharray="3 3" stroke="currentColor" className="text-zinc-100 dark:text-zinc-800" />
               <XAxis dataKey="month" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} />
-              <YAxis tick={{ fontSize: 12 }} tickLine={false} axisLine={false} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
+              <YAxis tick={{ fontSize: 12 }} tickLine={false} axisLine={false} tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} />
               <Tooltip
-                formatter={(value) => [`$${Number(value).toLocaleString()}`, undefined]}
+                formatter={(value) => [`₹${Number(value).toLocaleString()}`, undefined]}
                 contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
               />
               <Legend />
@@ -58,10 +58,10 @@ export function InsightsCharts({ monthlyData, categoryData }: InsightsChartsProp
           <ResponsiveContainer width="100%" height="100%">
             <BarChart data={categoryData} layout="vertical" barSize={16}>
               <CartesianGrid strokeDasharray="3 3" horizontal={false} stroke="currentColor" className="text-zinc-100 dark:text-zinc-800" />
-              <XAxis type="number" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} tickFormatter={(v) => `$${(v / 1000).toFixed(0)}k`} />
+              <XAxis type="number" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} tickFormatter={(v) => `₹${(v / 1000).toFixed(0)}k`} />
               <YAxis type="category" dataKey="name" tick={{ fontSize: 12 }} tickLine={false} axisLine={false} width={90} />
               <Tooltip
-                formatter={(value) => [`$${Number(value).toLocaleString()}`, "Total"]}
+                formatter={(value) => [`₹${Number(value).toLocaleString()}`, "Total"]}
                 contentStyle={{ borderRadius: "8px", border: "none", boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)" }}
               />
               <Bar dataKey="value" fill="#4f46e5" radius={[0, 4, 4, 0]} />
@@ -72,3 +72,4 @@ export function InsightsCharts({ monthlyData, categoryData }: InsightsChartsProp
     </div>
   );
 }
+
