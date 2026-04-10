@@ -23,9 +23,9 @@ const stats = [
 ];
 
 const insights = [
-  { icon: Home,      title: "Highest Spending",   badge: "Housing",   badgeCls: "bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-400",   value: "₹26,324.26", valueCls: "text-rose-600 dark:text-rose-400",    note: "Top expense category · 68% of total",  bar: "bg-rose-500",    barW: "68%" },
-  { icon: BarChart2, title: "Monthly Comparison", badge: "Falling",   badgeCls: "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-400", value: "−98.3%",     valueCls: "text-amber-600 dark:text-amber-400",  note: "vs ₹9,152.71 last month",              bar: "bg-amber-500",   barW: "18%" },
-  { icon: Heart,     title: "Savings Health",     badge: "Healthy",   badgeCls: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400", value: "45.3%", valueCls: "text-emerald-600 dark:text-emerald-400", note: "Above 40% target · on track",        bar: "bg-emerald-500", barW: "45%" },
+  { icon: Home,      title: "Highest Spending",   badge: "Housing",   badgeCls: "bg-rose-50 text-rose-700 dark:bg-rose-950 dark:text-rose-400",   value: "₹26,324.26", valueCls: "text-rose-600 dark:text-rose-400",    note: "Top expense category · 68% of total",  bar: "bg-rose-500",    barW: "68%", accent: "border-l-rose-500"    },
+  { icon: BarChart2, title: "Monthly Comparison", badge: "Falling",   badgeCls: "bg-amber-50 text-amber-700 dark:bg-amber-950 dark:text-amber-400", value: "−98.3%",     valueCls: "text-amber-600 dark:text-amber-400",  note: "vs ₹9,152.71 last month",              bar: "bg-amber-500",   barW: "18%", accent: "border-l-amber-500"   },
+  { icon: Heart,     title: "Savings Health",     badge: "Healthy",   badgeCls: "bg-emerald-50 text-emerald-700 dark:bg-emerald-950 dark:text-emerald-400", value: "45.3%", valueCls: "text-emerald-600 dark:text-emerald-400", note: "Above 40% target · on track",        bar: "bg-emerald-500", barW: "45%", accent: "border-l-emerald-500" },
 ];
 
 const recent = transactions.slice(0, 6);
@@ -48,10 +48,10 @@ export default function DashboardPage() {
       {/* KPI strip */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
         {stats.map((s) => (
-          <Card key={s.label} className="shadow-none border-border/80">
+          <Card key={s.label} className={`shadow-none border-l-4 ${s.accent} border-border/80 overflow-hidden`}>
             <CardHeader className="flex flex-row items-center justify-between space-y-0 py-4">
               <CardTitle className="text-sm font-bold text-muted-foreground uppercase tracking-widest">{s.label}</CardTitle>
-              <s.icon size={18} className="text-slate-400" />
+              <s.icon size={18} className={s.iconCls} />
             </CardHeader>
             <CardContent className="pb-4">
               <div className="text-3xl font-bold tracking-tight">{s.value}</div>
@@ -99,7 +99,7 @@ export default function DashboardPage() {
               </CardHeader>
               <CardContent className="space-y-4 pt-4">
                 {insights.map((ins) => (
-                  <div key={ins.title} className="group">
+                  <div key={ins.title} className={`group rounded-md border-l-4 ${ins.accent} border border-border/60 bg-muted/30 p-3`}>
                     <div className="flex items-center justify-between mb-1.5">
                       <div className="flex items-center gap-2">
                         <ins.icon size={16} className="text-slate-500" />

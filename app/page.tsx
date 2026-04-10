@@ -225,7 +225,8 @@ export default function LandingPage() {
           <h2 className="text-3xl sm:text-4xl font-bold">Everything you need</h2>
           <p className="mt-3 text-white/35 text-sm max-w-sm mx-auto">A complete toolkit for personal finance, beautifully designed.</p>
         </div>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+        {/* Desktop grid / Mobile marquee */}
+        <div className="hidden sm:grid sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {features.map((f, i) => (
             <RevealCard key={f.title} delay={i * 100}>
               <div className={`group relative h-full rounded-2xl border border-white/6 bg-gradient-to-br ${f.color} p-6 cursor-default transition-all duration-300 hover:border-white/15 hover:scale-[1.02]`}
@@ -239,6 +240,34 @@ export default function LandingPage() {
               </div>
             </RevealCard>
           ))}
+        </div>
+
+        {/* Mobile: two-row marquee */}
+        <div className="sm:hidden space-y-3 overflow-hidden">
+          {/* Row 1 — scrolls left */}
+          <div className="flex gap-3 w-max animate-marquee">
+            {[...features, ...features].map((f, i) => (
+              <div key={i} className={`w-52 shrink-0 rounded-2xl border border-white/6 bg-gradient-to-br ${f.color} p-4`}>
+                <div className="inline-flex p-2 rounded-xl bg-white/5 border border-white/8 mb-3">
+                  <f.icon className="h-4 w-4" style={{ color: f.iconColor }} />
+                </div>
+                <h3 className="font-semibold text-xs mb-1 text-white/90">{f.title}</h3>
+                <p className="text-[10px] text-white/35 leading-relaxed line-clamp-2">{f.desc}</p>
+              </div>
+            ))}
+          </div>
+          {/* Row 2 — scrolls right */}
+          <div className="flex gap-3 w-max animate-marquee-reverse">
+            {[...features.slice().reverse(), ...features.slice().reverse()].map((f, i) => (
+              <div key={i} className={`w-52 shrink-0 rounded-2xl border border-white/6 bg-gradient-to-br ${f.color} p-4`}>
+                <div className="inline-flex p-2 rounded-xl bg-white/5 border border-white/8 mb-3">
+                  <f.icon className="h-4 w-4" style={{ color: f.iconColor }} />
+                </div>
+                <h3 className="font-semibold text-xs mb-1 text-white/90">{f.title}</h3>
+                <p className="text-[10px] text-white/35 leading-relaxed line-clamp-2">{f.desc}</p>
+              </div>
+            ))}
+          </div>
         </div>
       </section>
 
